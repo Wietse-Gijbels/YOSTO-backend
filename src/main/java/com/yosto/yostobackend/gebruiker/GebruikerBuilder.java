@@ -21,6 +21,8 @@ public final class GebruikerBuilder {
 
     String woonplaats;
 
+    Status status;
+
     public GebruikerBuilder() {
     }
 
@@ -70,6 +72,11 @@ public final class GebruikerBuilder {
 
     public GebruikerBuilder setWoonplaats(String woonplaats) {
         this.woonplaats = woonplaats;
+        return this;
+    }
+
+    public GebruikerBuilder setStatus(Status status) {
+        this.status = status;
         return this;
     }
 

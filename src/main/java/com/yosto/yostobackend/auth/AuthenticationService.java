@@ -4,6 +4,7 @@ import com.yosto.yostobackend.config.JwtService;
 import com.yosto.yostobackend.gebruiker.Gebruiker;
 import com.yosto.yostobackend.gebruiker.GebruikerBuilder;
 import com.yosto.yostobackend.gebruiker.GebruikerRepository;
+import com.yosto.yostobackend.gebruiker.Status;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -39,6 +40,7 @@ public class AuthenticationService {
                 .setLeeftijd(request.getLeeftijd())
                 .setWoonplaats(request.getWoonplaats())
                 .setWachtwoord(passwordEncoder.encode(request.getWachtwoord()))
+                .setStatus(Status.ONLINE)
                 .build();
         repository.save(gebruiker);
         String jwtToken = jwtService.generateToken(gebruiker);

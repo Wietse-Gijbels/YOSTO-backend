@@ -34,11 +34,21 @@ public class Gebruiker implements UserDetails {
 
     private String woonplaats;
 
+    private Status status;
+
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     @CollectionTable(name = "gebruiker_roles", joinColumns = @JoinColumn(name = "gebruiker_id"))
     @Column(name = "rol")
     private Set<Rol> rollen;
+
+    public void disconnect(){
+        this.status = Status.OFFLINE;
+    }
+
+    public void connect(){
+        this.status = Status.ONLINE;
+    }
 
 
     public Gebruiker() {
@@ -53,6 +63,7 @@ public class Gebruiker implements UserDetails {
         this.geslacht = builder.geslacht;
         this.leeftijd = builder.leeftijd;
         this.woonplaats = builder.woonplaats;
+        this.status = builder.status;
     }
 
     public UUID getId() {
@@ -89,6 +100,10 @@ public class Gebruiker implements UserDetails {
 
     public String getWoonplaats() {
         return woonplaats;
+    }
+
+    public Status getStatus() {
+        return status;
     }
 
     @Override

@@ -66,6 +66,16 @@
             <artifactId>spring-boot-starter-security</artifactId>
             <version>3.2.5</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-websocket</artifactId>
+            <version>6.1.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-messaging</artifactId>
+            <version>6.1.6</version>
+        </dependency>
     </dependencies>
 
     <build>
