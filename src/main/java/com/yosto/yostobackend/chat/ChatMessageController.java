@@ -24,12 +24,12 @@ public class ChatMessageController {
         ChatMessage savedMsg = chatMessageService.save(chatMessage);
         messagingTemplate.convertAndSendToUser(
                 chatMessage.getRecipientId(), "/queue/messages",
-                new ChatNotification(
-                        savedMsg.getId(),
-                        savedMsg.getSenderId(),
-                        savedMsg.getRecipientId(),
-                        savedMsg.getContent()
-                )
+                new ChatNotificationBuilder()
+                        .id(savedMsg.getId())
+                        .senderId(savedMsg.getSenderId())
+                        .recipientId(savedMsg.getRecipientId())
+                        .content(savedMsg.getContent())
+                        .build()
         );
     }
 
