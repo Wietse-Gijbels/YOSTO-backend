@@ -3,6 +3,9 @@ package com.yosto.yostobackend.auth;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/v1/auth")
 public class AuthenticationController {
@@ -25,10 +28,5 @@ public class AuthenticationController {
             @RequestBody AuthenticationRequest request
     ) {
         return ResponseEntity.ok(service.login(request));
-    }
-
-    @GetMapping("/test")
-    public ResponseEntity<String> sayHello() {
-        return ResponseEntity.ok("{ HELLOOOOOO }");
     }
 }
