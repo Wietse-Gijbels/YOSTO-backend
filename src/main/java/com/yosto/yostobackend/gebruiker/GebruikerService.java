@@ -22,17 +22,10 @@ public class GebruikerService {
 
     public List<Gebruiker> findConnectedGebruikers() {
         return repository.findAllByStatus(Status.ONLINE);
-@Service
-public class GebruikerService {
-
-    private final GebruikerRepository gebruikerRepository;
-
-    public GebruikerService(GebruikerRepository gebruikerRepository) {
-        this.gebruikerRepository = gebruikerRepository;
     }
 
     public Gebruiker getGebruikerByEmail(String email) {
-        return gebruikerRepository.findByEmail(email)
+        return repository.findByEmail(email)
                 .orElseThrow();
     }
 }
