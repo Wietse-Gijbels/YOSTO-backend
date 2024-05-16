@@ -11,26 +11,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.util.List;
 
 public class ChatMessageController {
-    private final SimpMessagingTemplate messagingTemplate;
     private final ChatMessageService chatMessageService;
 
-    public ChatMessageController(SimpMessagingTemplate messagingTemplate, ChatMessageService chatMessageService) {
-        this.messagingTemplate = messagingTemplate;
+    public ChatMessageController(ChatMessageService chatMessageService) {
         this.chatMessageService = chatMessageService;
     }
 
     @MessageMapping("/chat")
     public void processMessage(@Payload ChatMessage chatMessage) {
-        ChatMessage savedMsg = chatMessageService.save(chatMessage);
-        messagingTemplate.convertAndSendToUser(
-                chatMessage.getRecipientId(), "/chat",
-                new ChatNotificationBuilder()
-                        .id(savedMsg.getId())
-                        .senderId(savedMsg.getSenderId())
-                        .recipientId(savedMsg.getRecipientId())
-                        .content(savedMsg.getContent())
-                        .build()
-        );
+        chatMessageService.processMessage(chatMessage);
     }
 
     @GetMapping("/messages/{senderId}/{recipientId}")

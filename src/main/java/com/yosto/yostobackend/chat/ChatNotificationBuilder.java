@@ -1,8 +1,10 @@
 package com.yosto.yostobackend.chat;
 
+import java.util.UUID;
+
 public class ChatNotificationBuilder {
 
-        Long id;
+        UUID id;
         String senderId;
         String recipientId;
         String content;
@@ -14,7 +16,7 @@ public class ChatNotificationBuilder {
             return new ChatNotificationBuilder();
         }
 
-        public ChatNotificationBuilder id(Long id) {
+        public ChatNotificationBuilder id(UUID id) {
             this.id = id;
             return this;
         }

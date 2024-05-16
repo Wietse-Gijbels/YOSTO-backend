@@ -5,13 +5,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 import java.util.Date;
+import java.util.UUID;
 
 @Entity
 @Table(name = "chat_message")
 public class ChatMessage {
 
     @Id
-    private Long id;
+    private UUID id;
     private String chatId;
     private String senderId;
     private String recipientId;
@@ -29,7 +30,7 @@ public class ChatMessage {
         this.timestamp = builder.timestamp;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
