@@ -2,7 +2,7 @@ package com.yosto.yostobackend.chat;
 
 public class ChatNotificationBuilder {
 
-        String id;
+        Long id;
         String senderId;
         String recipientId;
         String content;
@@ -14,7 +14,7 @@ public class ChatNotificationBuilder {
             return new ChatNotificationBuilder();
         }
 
-        public ChatNotificationBuilder id(String id) {
+        public ChatNotificationBuilder id(Long id) {
             this.id = id;
             return this;
         }

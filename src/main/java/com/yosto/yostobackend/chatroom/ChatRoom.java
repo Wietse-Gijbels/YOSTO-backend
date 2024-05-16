@@ -1,7 +1,11 @@
 package com.yosto.yostobackend.chatroom;
 
+import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
+@Entity
+@Table(name = "chat_room")
 public class ChatRoom {
 
     @Id

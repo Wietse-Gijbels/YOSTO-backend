@@ -5,7 +5,7 @@ import org.springframework.data.annotation.Id;
 public class ChatNotification {
 
     @Id
-    private String id;
+    private Long id;
     private String senderId;
     private String recipientId;
     private String content;

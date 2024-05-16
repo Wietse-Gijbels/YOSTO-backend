@@ -23,7 +23,7 @@ public class ChatMessageController {
     public void processMessage(@Payload ChatMessage chatMessage) {
         ChatMessage savedMsg = chatMessageService.save(chatMessage);
         messagingTemplate.convertAndSendToUser(
-                chatMessage.getRecipientId(), "/queue/messages",
+                chatMessage.getRecipientId(), "/chat",
                 new ChatNotificationBuilder()
                         .id(savedMsg.getId())
                         .senderId(savedMsg.getSenderId())
@@ -34,9 +34,8 @@ public class ChatMessageController {
     }
 
     @GetMapping("/messages/{senderId}/{recipientId}")
-    public ResponseEntity<List<ChatMessage>> findChatMessages(@PathVariable String senderId,
+    public List<ChatMessage> findChatMessages(@PathVariable String senderId,
                                                               @PathVariable String recipientId) {
-        return ResponseEntity
-                .ok(chatMessageService.findChatMessages(senderId, recipientId));
+        return chatMessageService.findChatMessages(senderId, recipientId);
     }
 }
