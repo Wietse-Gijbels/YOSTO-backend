@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class AuthenticationService {
@@ -35,6 +36,14 @@ public class AuthenticationService {
     public AuthenticationResponse registreer(RegisterRequest request) {
         Map<String, String> errors = new HashMap<>();
 
+        // Eerst checken of de gebruiker al bestaat
+        Optional<Gebruiker> gebruikerDuplicate = repository.findByEmail(request.getEmail().toLowerCase());
+        // Direct error throwen als gebruiker bestaat
+        if (gebruikerDuplicate.isPresent()) {
+            errors.put("errorDuplicate", "Er is al een account met dit e-mailadres.");
+            throw new ServiceException(errors);
+        }
+        // Overige checks controlleren
         if (request.getVoornaam() == null || request.getVoornaam().isBlank()) {
             errors.put("errorVoornaam", "Voornaam is verplicht.");
         }
@@ -69,7 +78,7 @@ public class AuthenticationService {
                 .setVoornaam(request.getVoornaam())
                 .setAchternaam(request.getAchternaam())
                 .setGebruikersnaam(request.getGebruikersnaam())
-                .setEmail(request.getEmail())
+                .setEmail(request.getEmail().toLowerCase())
                 .setGeslacht(request.getGeslacht())
                 .setLeeftijd(request.getLeeftijd())
                 .setWoonplaats(request.getWoonplaats())
