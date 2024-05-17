@@ -4,15 +4,17 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "chat_room")
 public class ChatRoom {
 
     @Id
-    private Long id;
+    private UUID id;
     private String chatId;
-    private String senderId;
-    private String recipientId;
+    private UUID senderId;
+    private UUID recipientId;
 
     public ChatRoom() {
     }
@@ -23,7 +25,7 @@ public class ChatRoom {
         this.recipientId = builder.recipientId;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
@@ -31,11 +33,11 @@ public class ChatRoom {
         return chatId;
     }
 
-    public String getSenderId() {
+    public UUID getSenderId() {
         return senderId;
     }
 
-    public String getRecipientId() {
+    public UUID getRecipientId() {
         return recipientId;
     }
 }

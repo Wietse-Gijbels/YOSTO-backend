@@ -1,14 +1,15 @@
 package com.yosto.yostobackend.gebruiker;
 
-import com.yosto.yostobackend.auth.AuthenticationRequest;
-import com.yosto.yostobackend.auth.AuthenticationResponse;
-import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/gebruiker")
@@ -37,5 +38,10 @@ public class GebruikerController {
     @GetMapping("/online")
     public List<Gebruiker> getConnectedGebruikers() {
         return gebruikerService.findConnectedGebruikers();
+    }
+
+    @GetMapping("/id/{id}")
+    public Gebruiker getNaamFromToken(@PathVariable String id) {
+        return gebruikerService.getById(UUID.fromString(id));
     }
 }

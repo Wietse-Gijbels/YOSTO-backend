@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ChatMessageService {
@@ -20,11 +21,11 @@ public class ChatMessageService {
     }
 
     public ChatMessage save(ChatMessage chatMessage) {
-        var chatId = chatRoomService
+        var chatRoomId = chatRoomService
                 .getChatRoomId(chatMessage.getSenderId(), chatMessage.getRecipientId(), true)
                 .orElseThrow();
         ChatMessage newChat = new ChatMessageBuilder()
-                .chatId(chatId)
+                .chatRoomId(chatRoomId)
                 .senderId(chatMessage.getSenderId())
                 .recipientId(chatMessage.getRecipientId())
                 .content(chatMessage.getContent())
@@ -34,15 +35,15 @@ public class ChatMessageService {
         return chatMessage;
     }
 
-    public List<ChatMessage> findChatMessages(String senderId, String recipientId) {
-        var chatId = chatRoomService.getChatRoomId(senderId, recipientId, false);
-        return chatId.map(repository::findByChatId).orElse(new ArrayList<>());
+    public List<ChatMessage> findChatMessages(UUID senderId, UUID recipientId) {
+        var chatRoomId = chatRoomService.getChatRoomId(senderId, recipientId, false);
+        return chatRoomId.map(repository::findByChatId).orElse(new ArrayList<>());
     }
 
     public void processMessage(ChatMessage chatMessage) {
         ChatMessage savedMsg = save(chatMessage);
         messagingTemplate.convertAndSendToUser(
-                chatMessage.getRecipientId(), "/chat",
+                chatMessage.getRecipientId().toString(), "/queue/messages",
                 new ChatNotificationBuilder()
                         .id(savedMsg.getId())
                         .senderId(savedMsg.getSenderId())

@@ -1,10 +1,12 @@
 package com.yosto.yostobackend.chatroom;
 
+import java.util.UUID;
+
 public class ChatRoomBuilder {
 
     String chatId;
-    String senderId;
-    String recipientId;
+    UUID senderId;
+    UUID recipientId;
 
     public ChatRoomBuilder() {
     }
@@ -18,12 +20,12 @@ public class ChatRoomBuilder {
         return this;
     }
 
-    public ChatRoomBuilder senderId(String senderId) {
+    public ChatRoomBuilder senderId(UUID senderId) {
         this.senderId = senderId;
         return this;
     }
 
-    public ChatRoomBuilder recipientId(String recipientId) {
+    public ChatRoomBuilder recipientId(UUID recipientId) {
         this.recipientId = recipientId;
         return this;
     }

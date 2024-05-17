@@ -45,7 +45,7 @@ public class AuthenticationService {
         repository.save(gebruiker);
         String jwtToken = jwtService.generateToken(gebruiker);
         return AuthenticationResponseBuilder.authenticationResponseBuilder()
-                .setToken(jwtToken)
+                .setToken(gebruiker.getId().toString())
                 .build();
     }
 

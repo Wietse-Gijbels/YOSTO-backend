@@ -8,8 +8,8 @@ public class ChatNotification {
 
     @Id
     private UUID id;
-    private String senderId;
-    private String recipientId;
+    private UUID senderId;
+    private UUID recipientId;
     private String content;
 
     public ChatNotification() {
