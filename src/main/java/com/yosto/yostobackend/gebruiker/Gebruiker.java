@@ -5,9 +5,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Entity
@@ -34,6 +32,12 @@ public class Gebruiker implements UserDetails {
 
     private String woonplaats;
 
+    // TODO Studies moeten opgehaald worden uit database van studierichtingen waarschijnlijk
+    // private String huidigeStudie;
+
+    // TODO Studies moeten opgehaald worden uit database van studierichtingen waarschijnlijk
+    // private List<String> behaaldeDiplomas = new ArrayList<>();
+
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     @CollectionTable(name = "gebruiker_roles", joinColumns = @JoinColumn(name = "gebruiker_id"))
@@ -53,6 +57,7 @@ public class Gebruiker implements UserDetails {
         this.geslacht = builder.geslacht;
         this.leeftijd = builder.leeftijd;
         this.woonplaats = builder.woonplaats;
+        this.rollen = Collections.singleton(builder.rol);
     }
 
     public UUID getId() {
@@ -89,6 +94,10 @@ public class Gebruiker implements UserDetails {
 
     public String getWoonplaats() {
         return woonplaats;
+    }
+
+    public Set<Rol> getRollen() {
+        return rollen;
     }
 
     @Override

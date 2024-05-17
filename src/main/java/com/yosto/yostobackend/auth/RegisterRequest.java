@@ -1,5 +1,7 @@
 package com.yosto.yostobackend.auth;
 
+import com.yosto.yostobackend.gebruiker.Rol;
+
 public class RegisterRequest {
 
     private String voornaam;
@@ -18,10 +20,12 @@ public class RegisterRequest {
 
     private String woonplaats;
 
+    private Rol rol;
+
     public RegisterRequest() {
     }
 
-    public RegisterRequest(String voornaam, String achternaam, String gebruikersnaam, String email, String wachtwoord, String geslacht, int leeftijd, String woonplaats) {
+    public RegisterRequest(String voornaam, String achternaam, String gebruikersnaam, String email, String wachtwoord, String geslacht, int leeftijd, String woonplaats, Rol rol) {
         this.voornaam = voornaam;
         this.achternaam = achternaam;
         this.gebruikersnaam = gebruikersnaam;
@@ -30,6 +34,7 @@ public class RegisterRequest {
         this.geslacht = geslacht;
         this.leeftijd = leeftijd;
         this.woonplaats = woonplaats;
+        this.rol = rol;
     }
 
     public String getVoornaam() {
@@ -62,5 +67,10 @@ public class RegisterRequest {
 
     public String getWoonplaats() {
         return woonplaats;
+    }
+
+
+    public Rol getRol() {
+        return rol;
     }
 }

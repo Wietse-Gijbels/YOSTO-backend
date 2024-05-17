@@ -1,20 +1,16 @@
 package com.yosto.yostobackend.generic;
 
+import java.util.Map;
+
 public class ServiceException extends RuntimeException {
+    private final Map<String, String> errors;
 
-    private String action;
-
-    public String getAction() {
-        return action;
+    public ServiceException(Map<String, String> errors) {
+        super(errors.values().toString());
+        this.errors = errors;
     }
 
-    public void setAction(String action) {
-        this.action = action;
-    }
-
-    public ServiceException(String action, String message) {
-        super(message);
-        this.action = action;
+    public Map<String, String> getErrors() {
+        return errors;
     }
 }
-

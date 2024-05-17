@@ -21,6 +21,8 @@ public final class GebruikerBuilder {
 
     String woonplaats;
 
+    Rol rol;
+
     public GebruikerBuilder() {
     }
 
@@ -72,6 +74,12 @@ public final class GebruikerBuilder {
         this.woonplaats = woonplaats;
         return this;
     }
+
+    public GebruikerBuilder setRol(Rol rol) {
+        this.rol = rol;
+        return this;
+    }
+
 
     public Gebruiker build() {
         return new Gebruiker(this);
