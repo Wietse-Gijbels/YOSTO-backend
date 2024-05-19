@@ -60,7 +60,7 @@ public class AuthenticationService {
                 .orElseThrow();
         String jwtToken = jwtService.generateToken(gebruiker);
         return AuthenticationResponseBuilder.authenticationResponseBuilder()
-                .setToken(jwtToken)
+                .setToken(gebruiker.getId().toString())
                 .build();
     }
 }

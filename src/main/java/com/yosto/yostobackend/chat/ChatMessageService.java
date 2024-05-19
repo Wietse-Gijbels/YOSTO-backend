@@ -37,7 +37,7 @@ public class ChatMessageService {
 
     public List<ChatMessage> findChatMessages(UUID senderId, UUID recipientId) {
         var chatRoomId = chatRoomService.getChatRoomId(senderId, recipientId, false);
-        return chatRoomId.map(repository::findByChatId).orElse(new ArrayList<>());
+        return chatRoomId.map(repository::findByChatRoomId).orElse(new ArrayList<>());
     }
 
     public void processMessage(ChatMessage chatMessage) {
