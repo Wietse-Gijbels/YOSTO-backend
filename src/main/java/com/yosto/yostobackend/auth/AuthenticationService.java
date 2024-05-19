@@ -50,9 +50,9 @@ public class AuthenticationService {
         if (request.getAchternaam() == null || request.getAchternaam().isBlank()) {
             errors.put("errorAchternaam", "Achternaam is verplicht.");
         }
-        if (request.getGebruikersnaam() == null || request.getGebruikersnaam().isBlank()) {
-            errors.put("errorGebruikersnaam", "Gebruikersnaam is verplicht.");
-        }
+//        if (request.getGebruikersnaam() == null || request.getGebruikersnaam().isBlank()) {
+//            errors.put("errorGebruikersnaam", "Gebruikersnaam is verplicht.");
+//        }
         if (request.getEmail() == null || request.getEmail().isBlank()) {
             errors.put("errorEmail", "Email is verplicht.");
         }
@@ -62,12 +62,12 @@ public class AuthenticationService {
         if (request.getWoonplaats() == null || request.getWoonplaats().isBlank()) {
             errors.put("errorProvincie", "Provincie is verplicht.");
         }
-        if (request.getRol() == null) {
-            errors.put("errorRol", "Rol is verplicht.");
-        }
-        if (request.getRol() == Rol.ADMIN) {
-            errors.put("errorAdmin", "U heeft geen rechten om een admin account aan te maken.");
-        }
+//        if (request.getRol() == null) {
+//            errors.put("errorRol", "Rol is verplicht.");
+//        }
+//        if (request.getRol() == Rol.ADMIN) {
+//            errors.put("errorAdmin", "U heeft geen rechten om een admin account aan te maken.");
+//        }
 
         if (!errors.isEmpty()) {
             throw new ServiceException(errors);
