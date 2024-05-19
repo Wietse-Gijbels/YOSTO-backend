@@ -1,6 +1,11 @@
 package com.yosto.yostobackend.gebruiker;
 
+import com.yosto.yostobackend.generic.ServiceException;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class GebruikerService {
@@ -12,7 +17,20 @@ public class GebruikerService {
     }
 
     public Gebruiker getGebruikerByEmail(String email) {
-        return gebruikerRepository.findByEmail(email)
-                .orElseThrow();
+        Map<String, String> errors = new HashMap<>();
+
+        return gebruikerRepository.findByEmail(email).orElseThrow(() -> {
+            errors.put("errorFindByEmail", "Er bestaat geen gebruiker met deze email.");
+            return new ServiceException(errors);
+        });
+    }
+
+    public Gebruiker getGebruikerById(UUID id) {
+        Map<String, String> errors = new HashMap<>();
+
+        return gebruikerRepository.findById(id).orElseThrow(() -> {
+            errors.put("errorFindById", "Er bestaat geen gebruiker met deze id.");
+            return new ServiceException(errors);
+        });
     }
 }
