@@ -1,5 +1,6 @@
 package com.yosto.yostobackend.chat;
 
+import jakarta.persistence.GeneratedValue;
 import org.springframework.data.annotation.Id;
 
 import java.util.UUID;
@@ -7,6 +8,7 @@ import java.util.UUID;
 public class ChatNotification {
 
     @Id
+    @GeneratedValue
     private UUID id;
     private UUID senderId;
     private UUID recipientId;

@@ -1,6 +1,7 @@
 package com.yosto.yostobackend.chatroom;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
@@ -11,6 +12,7 @@ import java.util.UUID;
 public class ChatRoom {
 
     @Id
+    @GeneratedValue
     private UUID id;
     private String chatId;
     private UUID senderId;

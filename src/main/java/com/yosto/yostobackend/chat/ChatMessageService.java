@@ -32,18 +32,18 @@ public class ChatMessageService {
                 .timestamp(chatMessage.getTimestamp())
                 .build();
         repository.save(newChat);
-        return chatMessage;
+        return newChat;
     }
 
     public List<ChatMessage> findChatMessages(UUID senderId, UUID recipientId) {
         var chatRoomId = chatRoomService.getChatRoomId(senderId, recipientId, false);
-        return chatRoomId.map(repository::findByChatId).orElse(new ArrayList<>());
+        return chatRoomId.map(repository::findByChatRoomId).orElse(new ArrayList<>());
     }
 
     public void processMessage(ChatMessage chatMessage) {
         ChatMessage savedMsg = save(chatMessage);
         messagingTemplate.convertAndSendToUser(
-                chatMessage.getRecipientId().toString(), "/queue/messages",
+                savedMsg.getRecipientId().toString(), "/queue/messages",
                 new ChatNotificationBuilder()
                         .id(savedMsg.getId())
                         .senderId(savedMsg.getSenderId())
