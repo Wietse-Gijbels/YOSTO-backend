@@ -4,10 +4,10 @@ import com.yosto.yostobackend.config.JwtService;
 import com.yosto.yostobackend.gebruiker.Gebruiker;
 import com.yosto.yostobackend.gebruiker.GebruikerBuilder;
 import com.yosto.yostobackend.gebruiker.GebruikerRepository;
-import com.yosto.yostobackend.gebruiker.Rol;
 import com.yosto.yostobackend.generic.ServiceException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -97,22 +97,28 @@ public class AuthenticationService {
         Map<String, String> errors = new HashMap<>();
 
         if (request.getEmail() == null || request.getEmail().isBlank()) {
-            errors.put("errorEmail", "Email is verplicht.");
+            errors.put("errorLoginEmail", "Email is verplicht!");
         }
         if (request.getWachtwoord() == null || request.getWachtwoord().isBlank()) {
-            errors.put("errorWachtwoord", "Wachtwoord is verplicht.");
+            errors.put("errorLoginWachtwoord", "Wachtwoord is verplicht!");
         }
 
         if (!errors.isEmpty()) {
             throw new ServiceException(errors);
         }
 
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getWachtwoord()
-                )
-        );
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getEmail(),
+                            request.getWachtwoord()
+                    )
+            );
+        } catch (AuthenticationException e) {
+            errors.put("errorLogin", "Ongeldig e-mailadres en/of wachtwoord!");
+            throw new ServiceException(errors);
+        }
+
         Gebruiker gebruiker = repository.findByEmail(request.getEmail())
                 .orElseThrow();
         String jwtToken = jwtService.generateToken(gebruiker);
