@@ -49,6 +49,7 @@ public class ChatMessageService {
                         .senderId(savedMsg.getSenderId())
                         .recipientId(savedMsg.getRecipientId())
                         .content(savedMsg.getContent())
+                        .timestamp(savedMsg.getTimestamp())
                         .build()
         );
     }

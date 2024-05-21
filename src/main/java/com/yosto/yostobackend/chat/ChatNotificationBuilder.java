@@ -1,6 +1,7 @@
 package com.yosto.yostobackend.chat;
 
 import java.util.UUID;
+import java.util.Date;
 
 public class ChatNotificationBuilder {
 
@@ -8,6 +9,7 @@ public class ChatNotificationBuilder {
     UUID senderId;
     UUID recipientId;
     String content;
+    Date timestamp;
 
     public ChatNotificationBuilder() {
     }
@@ -33,6 +35,11 @@ public class ChatNotificationBuilder {
 
     public ChatNotificationBuilder content(String content) {
         this.content = content;
+        return this;
+    }
+
+    public ChatNotificationBuilder timestamp(Date timestamp) {
+        this.timestamp = timestamp;
         return this;
     }
 
