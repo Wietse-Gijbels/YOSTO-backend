@@ -4,6 +4,7 @@ import com.yosto.yostobackend.config.JwtService;
 import com.yosto.yostobackend.gebruiker.Gebruiker;
 import com.yosto.yostobackend.gebruiker.GebruikerBuilder;
 import com.yosto.yostobackend.gebruiker.GebruikerRepository;
+import com.yosto.yostobackend.gebruiker.Status;
 import com.yosto.yostobackend.generic.ServiceException;
 import java.util.HashMap;
 import java.util.Map;
@@ -89,6 +90,7 @@ public class AuthenticationService {
       .setWoonplaats(request.getWoonplaats())
       .setWachtwoord(passwordEncoder.encode(request.getWachtwoord()))
       .setRol(request.getRol())
+      .setStatus(Status.ONLINE)
       .build();
     repository.save(gebruiker);
     String jwtToken = jwtService.generateToken(gebruiker);

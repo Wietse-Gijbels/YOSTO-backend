@@ -30,6 +30,8 @@ public class Gebruiker implements UserDetails {
 
   private String woonplaats;
 
+  private Status status;
+
   // TODO Studies moeten opgehaald worden uit database van studierichtingen waarschijnlijk
   // private String huidigeStudie;
 
@@ -45,6 +47,14 @@ public class Gebruiker implements UserDetails {
   @Column(name = "rol")
   private Set<Rol> rollen;
 
+  public void disconnect() {
+    this.status = Status.OFFLINE;
+  }
+
+  public void connect() {
+    this.status = Status.ONLINE;
+  }
+
   public Gebruiker() {}
 
   public Gebruiker(GebruikerBuilder builder) {
@@ -57,6 +67,7 @@ public class Gebruiker implements UserDetails {
     this.leeftijd = builder.leeftijd;
     this.woonplaats = builder.woonplaats;
     this.rollen = Collections.singleton(builder.rol);
+    this.status = builder.status;
   }
 
   public UUID getId() {
@@ -97,6 +108,10 @@ public class Gebruiker implements UserDetails {
 
   public Set<Rol> getRollen() {
     return rollen;
+  }
+
+  public Status getStatus() {
+    return status;
   }
 
   @Override
