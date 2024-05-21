@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -48,23 +49,19 @@ public class GebruikerController {
     return gebruikerService.findConnectedGebruikers();
   }
 
-  @GetMapping("/id/{id}")
-  public Gebruiker getNaamFromToken(@PathVariable String id) {
-    return gebruikerService.getGebruikerById(UUID.fromString(id));
-  }
-
   @GetMapping("/email/{token}")
   public String getEmailFromToken(@PathVariable String token) {
     return jwtService.extractEmail(token);
   }
 
   @GetMapping("/id/{token}")
-  public String getIdFromToken(@PathVariable String token) {
-    Gebruiker gebruiker = gebruikerService.getGebruikerByEmail(
-      jwtService.extractEmail(token)
-    );
-    return String.valueOf(gebruiker.getId());
+  public ResponseEntity<Map<String, String>> getIdFromToken(@PathVariable String token) {
+    Gebruiker gebruiker = gebruikerService.getGebruikerByEmail(jwtService.extractEmail(token));
+    Map<String, String> response = new HashMap<>();
+    response.put("id", gebruiker.getId().toString());
+    return ResponseEntity.ok(response);
   }
+
 
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   @ExceptionHandler(
