@@ -90,7 +90,7 @@ public class AuthenticationService {
       .setWoonplaats(request.getWoonplaats())
       .setWachtwoord(passwordEncoder.encode(request.getWachtwoord()))
       .setRol(request.getRol())
-                .setStatus(Status.ONLINE)
+      .setStatus(Status.ONLINE)
       .build();
     repository.save(gebruiker);
     String jwtToken = jwtService.generateToken(gebruiker);

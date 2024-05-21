@@ -2,37 +2,35 @@ package com.yosto.yostobackend.gebruiker;
 
 import com.yosto.yostobackend.generic.ServiceException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import org.springframework.stereotype.Service;
 
 @Service
 public class GebruikerService {
+  private final GebruikerRepository repository;
 
-    private final GebruikerRepository repository;
+  public GebruikerService(GebruikerRepository repository) {
+    this.repository = repository;
+  }
 
-    public GebruikerService(GebruikerRepository repository) {
-        this.repository = repository;
-    }
+  public void disconnect(Gebruiker gebruiker) {
+    repository.findById(gebruiker.getId()).orElseThrow();
+    gebruiker.disconnect();
+    repository.save(gebruiker);
+  }
 
-    public void disconnect(Gebruiker gebruiker) {
-        repository.findById(gebruiker.getId()).orElseThrow();
-        gebruiker.disconnect();
-        repository.save(gebruiker);
-    }
-
-    public List<Gebruiker> findConnectedGebruikers() {
-        return repository.findAllByStatus(Status.ONLINE);
+  public List<Gebruiker> findConnectedGebruikers() {
+    return repository.findAllByStatus(Status.ONLINE);
   }
 
   public Gebruiker getGebruikerByEmail(String email) {
     Map<String, String> errors = new HashMap<>();
 
-    return gebruikerRepository
+    return repository
       .findByEmail(email)
       .orElseThrow(
         () -> {
@@ -45,7 +43,7 @@ public class GebruikerService {
   public Gebruiker getGebruikerById(UUID id) {
     Map<String, String> errors = new HashMap<>();
 
-    return gebruikerRepository
+    return repository
       .findById(id)
       .orElseThrow(
         () -> {
@@ -53,11 +51,5 @@ public class GebruikerService {
           return new ServiceException(errors);
         }
       );
-        return repository.findByEmail(email)
-                .orElseThrow();
   }
-
-    public Gebruiker getById(UUID id) {
-        return repository.findById(id).orElseThrow();
-    }
 }

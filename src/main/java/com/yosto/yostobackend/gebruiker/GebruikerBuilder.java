@@ -25,9 +25,7 @@ public final class GebruikerBuilder {
 
   Rol rol;
 
-  public GebruikerBuilder() {
-  }
-
+  public GebruikerBuilder() {}
 
   public static GebruikerBuilder gebruikerBuilder() {
     return new GebruikerBuilder();
@@ -83,10 +81,10 @@ public final class GebruikerBuilder {
     return this;
   }
 
-    public GebruikerBuilder setStatus(Status status) {
-        this.status = status;
-        return this;
-    }
+  public GebruikerBuilder setStatus(Status status) {
+    this.status = status;
+    return this;
+  }
 
   public Gebruiker build() {
     return new Gebruiker(this);
