@@ -1,5 +1,6 @@
 package com.yosto.yostobackend.gebruiker;
 
+import com.yosto.yostobackend.geschenk.Geschenk;
 import jakarta.persistence.*;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -31,6 +32,9 @@ public class Gebruiker implements UserDetails {
   private String woonplaats;
 
   private Status status;
+
+  @OneToMany(mappedBy = "gebruiker", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Geschenk> geschenken = new ArrayList<>();
 
   // TODO Studies moeten opgehaald worden uit database van studierichtingen waarschijnlijk
   // private String huidigeStudie;
@@ -112,6 +116,10 @@ public class Gebruiker implements UserDetails {
 
   public Status getStatus() {
     return status;
+  }
+
+  public List<Geschenk> getGeschenken() {
+    return geschenken;
   }
 
   @Override
