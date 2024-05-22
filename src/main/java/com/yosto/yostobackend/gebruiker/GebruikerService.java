@@ -1,21 +1,27 @@
 package com.yosto.yostobackend.gebruiker;
 
 import com.yosto.yostobackend.generic.ServiceException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+
+import java.util.*;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import com.yosto.yostobackend.geschenk.Geschenk;
+import com.yosto.yostobackend.geschenk.GeschenkRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.View;
 
 @Service
 public class GebruikerService {
   private final GebruikerRepository repository;
+  private final GeschenkRepository geschenkRepository;
+    private final View error;
 
-  public GebruikerService(GebruikerRepository repository) {
+    public GebruikerService(GebruikerRepository repository, GeschenkRepository geschenkRepository, View error) {
     this.repository = repository;
-  }
+        this.geschenkRepository = geschenkRepository;
+        this.error = error;
+    }
 
   public void disconnect(Gebruiker gebruiker) {
     repository.findById(gebruiker.getId()).orElseThrow();
@@ -52,4 +58,18 @@ public class GebruikerService {
         }
       );
   }
+
+    public void addGeschenkToGebruiker(UUID gebruikerId, UUID geschenkId) {
+        Map<String, String> errors = new HashMap<>();
+        Optional<Gebruiker> gebruikerOpt = repository.findById(gebruikerId);
+        Optional<Geschenk> geschenkOpt = geschenkRepository.findById(geschenkId);
+
+        if (gebruikerOpt.isPresent() && geschenkOpt.isPresent()) {
+            gebruikerOpt.get().addGeschenk(geschenkOpt.get());
+            repository.save(gebruikerOpt.get());
+        } else {
+            errors.put("gebruikerGeschenk", "Gebruiker en/of geschenk niet gevonden.");
+            throw new ServiceException(errors);
+        }
+    }
 }

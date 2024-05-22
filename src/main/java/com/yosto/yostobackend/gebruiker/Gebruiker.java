@@ -1,5 +1,6 @@
 package com.yosto.yostobackend.gebruiker;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.yosto.yostobackend.geschenk.Geschenk;
 import jakarta.persistence.*;
 import java.util.*;
@@ -34,6 +35,7 @@ public class Gebruiker implements UserDetails {
   private Status status;
 
   @OneToMany(mappedBy = "gebruiker", cascade = CascadeType.ALL, orphanRemoval = true)
+  @JsonManagedReference(value = "gebruiker-geschenken")
   private List<Geschenk> geschenken = new ArrayList<>();
 
   // TODO Studies moeten opgehaald worden uit database van studierichtingen waarschijnlijk
@@ -120,6 +122,11 @@ public class Gebruiker implements UserDetails {
 
   public List<Geschenk> getGeschenken() {
     return geschenken;
+  }
+
+  public void addGeschenk(Geschenk geschenk) {
+    geschenken.add(geschenk);
+    geschenk.updateGebruiker(this);
   }
 
   @Override

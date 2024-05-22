@@ -1,5 +1,6 @@
 package com.yosto.yostobackend.geschenk;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import java.util.UUID;
 import com.yosto.yostobackend.gebruiker.Gebruiker;
@@ -20,11 +21,13 @@ public class Geschenk {
     private double prijs;
 
     @ManyToOne
-    @JoinColumn(name = "gebruiker_id", nullable = false)
+    @JoinColumn(name = "gebruiker_id")
+    @JsonBackReference(value = "gebruiker-geschenken")
     private Gebruiker gebruiker;
 
     @ManyToOne
     @JoinColumn(name = "geschenk_categorie_id", nullable = false)
+    @JsonBackReference(value = "categorie-geschenken")
     private GeschenkCategorie geschenkCategorie;
 
     public Geschenk() {
@@ -36,6 +39,7 @@ public class Geschenk {
         this.prijs = builder.prijs;
         this.gebruiker = builder.gebruiker;
         this.geschenkCategorie = builder.geschenkCategorie;
+        this.geschenkCategorie.addGeschenk(this);
     }
 
     public UUID getId() {
@@ -60,5 +64,13 @@ public class Geschenk {
 
     public GeschenkCategorie getGeschenkCategorie() {
         return geschenkCategorie;
+    }
+
+    public void updateGebruiker(Gebruiker gebruiker) {
+        this.gebruiker = gebruiker;
+    }
+
+    public void updateGeschenkCategorie(GeschenkCategorie geschenkCategorie) {
+        this.geschenkCategorie = geschenkCategorie;
     }
 }

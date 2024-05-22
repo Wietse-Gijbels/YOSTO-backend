@@ -1,5 +1,6 @@
 package com.yosto.yostobackend.geschenkcategorie;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,7 @@ public class GeschenkCategorie {
     private String foto;
 
     @OneToMany(mappedBy = "geschenkCategorie", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference(value = "categorie-geschenken")
     private List<Geschenk> geschenken = new ArrayList<>();
 
     public GeschenkCategorie() {
@@ -43,5 +45,10 @@ public class GeschenkCategorie {
 
     public List<Geschenk> getGeschenken() {
         return geschenken;
+    }
+
+    public void addGeschenk(Geschenk geschenk) {
+        geschenken.add(geschenk);
+        geschenk.updateGeschenkCategorie(this);
     }
 }
