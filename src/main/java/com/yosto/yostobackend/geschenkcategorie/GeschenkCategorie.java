@@ -21,6 +21,7 @@ public class GeschenkCategorie {
 
     private String beschrijving;
 
+    private String fotoUrl;  // Nieuw veld toegevoegd
 
     @OneToMany(mappedBy = "geschenkCategorie", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference(value = "categorie-geschenken")
@@ -33,6 +34,7 @@ public class GeschenkCategorie {
         this.naam = builder.naam;
         this.prijs = builder.prijs;
         this.beschrijving = builder.beschrijving;
+        this.fotoUrl = builder.fotoUrl;  // Nieuw veld toegevoegd
     }
 
     public UUID getId() {
@@ -51,6 +53,10 @@ public class GeschenkCategorie {
         return beschrijving;
     }
 
+    public String getFotoUrl() {
+        return fotoUrl;
+    }
+
     public List<Geschenk> getGeschenken() {
         return geschenken;
     }
@@ -58,5 +64,9 @@ public class GeschenkCategorie {
     public void addGeschenk(Geschenk geschenk) {
         geschenken.add(geschenk);
         geschenk.updateGeschenkCategorie(this);
+    }
+
+    public void setFotoUrl(String fotoUrl) {
+        this.fotoUrl = fotoUrl;
     }
 }

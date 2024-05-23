@@ -1,12 +1,20 @@
 package com.yosto.yostobackend.geschenkcategorie;
 
 import com.yosto.yostobackend.generic.ServiceException;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,9 +31,51 @@ public class GeschenkCategorieController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<GeschenkCategorie> createGeschenkCategorie(@RequestBody GeschenkCategorie geschenkCategorie) {
-        GeschenkCategorie gc = geschenkCategorieService.createGeschenkCategorie(geschenkCategorie);
-        return ResponseEntity.status(HttpStatus.CREATED).body(gc);
+    public ResponseEntity<GeschenkCategorie> createGeschenkCategorie(
+            @RequestParam("naam") String naam,
+            @RequestParam("prijs") int prijs,
+            @RequestParam("beschrijving") String beschrijving,
+            @RequestParam("file") MultipartFile file) throws IOException {
+
+
+            String fileName = geschenkCategorieService.storeFile(file);
+            GeschenkCategorie geschenkCategorie = new GeschenkCategorieBuilder()
+                    .setNaam(naam)
+                    .setPrijs(prijs)
+                    .setBeschrijving(beschrijving)
+                    .setFotoUrl(fileName)
+                    .build();
+            GeschenkCategorie gc = geschenkCategorieService.createGeschenkCategorie(geschenkCategorie);
+            return ResponseEntity.status(HttpStatus.CREATED).body(gc);
+
+    }
+
+
+    @PostMapping("/upload")
+    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
+        try {
+            String fileName = geschenkCategorieService.storeFile(file);
+            return ResponseEntity.status(HttpStatus.OK).body(fileName);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("File upload failed");
+        }
+    }
+
+    @GetMapping("/files/{filename:.+}")
+    public ResponseEntity<Resource> getFile(@PathVariable String filename) {
+        try {
+            Path filePath = Paths.get(geschenkCategorieService.getFileUploadDir()).resolve(filename).normalize();
+            Resource resource = new UrlResource(filePath.toUri());
+            if (resource.exists()) {
+                return ResponseEntity.ok()
+                        .contentType(MediaType.parseMediaType(Files.probeContentType(filePath)))
+                        .body(resource);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
     @GetMapping("/all")

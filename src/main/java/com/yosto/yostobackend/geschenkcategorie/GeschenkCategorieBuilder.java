@@ -4,12 +4,10 @@ import java.util.UUID;
 
 public class GeschenkCategorieBuilder {
     UUID id;
-
     String naam;
-
     int prijs;
-
     String beschrijving;
+    String fotoUrl;  // Nieuw veld toegevoegd
 
     public GeschenkCategorieBuilder() {
     }
@@ -35,6 +33,11 @@ public class GeschenkCategorieBuilder {
 
     public GeschenkCategorieBuilder setBeschrijving(String beschrijving) {
         this.beschrijving = beschrijving;
+        return this;
+    }
+
+    public GeschenkCategorieBuilder setFotoUrl(String fotoUrl) {
+        this.fotoUrl = fotoUrl;
         return this;
     }
 
