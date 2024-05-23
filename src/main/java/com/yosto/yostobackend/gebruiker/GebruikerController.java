@@ -32,9 +32,9 @@ public class GebruikerController {
     this.jwtService = jwtService;
   }
 
-  @GetMapping("/{email}")
-  public Gebruiker getGebruiker(@PathVariable String email) {
-    return gebruikerService.getGebruikerByEmail(email);
+  @GetMapping("/{token}")
+  public Gebruiker getGebruiker(@PathVariable String token) {
+    return gebruikerService.getGebruikerByEmail(jwtService.extractEmail(token));
   }
 
   @MessageMapping("/gebruiker.disconnectGebruiker")
@@ -61,6 +61,17 @@ public class GebruikerController {
     response.put("id", gebruiker.getId().toString());
     return ResponseEntity.ok(response);
   }
+
+  @PutMapping("/{token}")
+    public Gebruiker updateGebruiker(
+        @PathVariable String token,
+        @RequestBody UpdateGebruikerDTO gebruiker
+    ) {
+        return gebruikerService.updateGebruiker(
+        jwtService.extractEmail(token),
+        gebruiker
+        );
+    }
 
 
   @ResponseStatus(HttpStatus.BAD_REQUEST)
