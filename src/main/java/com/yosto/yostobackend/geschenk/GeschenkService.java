@@ -32,8 +32,6 @@ public class GeschenkService {
 
         // Validatiecontrole
         if (geschenk.getTitel() == null || geschenk.getTitel().isBlank() ||
-                geschenk.getBeschrijving() == null || geschenk.getBeschrijving().isBlank() ||
-                geschenk.getPrijs() < 0 ||
                 geschenk.getGeschenkCategorie() == null || geschenk.getGeschenkCategorie().getId() == null) {
             errors.put("createGeschenk", "Dit is geen geldig geschenk.");
             throw new ServiceException(errors);
@@ -49,8 +47,7 @@ public class GeschenkService {
         GeschenkCategorie categorie = categorieOpt.get();
         Geschenk nieuwGeschenk = GeschenkBuilder.geschenkBuilder()
                 .setTitel(geschenk.getTitel())
-                .setBeschrijving(geschenk.getBeschrijving())
-                .setPrijs(geschenk.getPrijs())
+                .setBeschikbaar(true)
                 .setGeschenkCategorie(categorie)
                 .build();
         return geschenkRepository.save(nieuwGeschenk);

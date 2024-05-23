@@ -16,9 +16,7 @@ public class Geschenk {
 
     private String titel;
 
-    private String beschrijving;
-
-    private double prijs;
+    private boolean isBeschikbaar;
 
     @ManyToOne
     @JoinColumn(name = "gebruiker_id")
@@ -35,9 +33,8 @@ public class Geschenk {
 
     public Geschenk(GeschenkBuilder builder) {
         this.titel = builder.titel;
-        this.beschrijving = builder.beschrijving;
-        this.prijs = builder.prijs;
         this.gebruiker = builder.gebruiker;
+        this.isBeschikbaar = builder.isBeschikbaar;
         this.geschenkCategorie = builder.geschenkCategorie;
         this.geschenkCategorie.addGeschenk(this);
     }
@@ -50,12 +47,8 @@ public class Geschenk {
         return titel;
     }
 
-    public String getBeschrijving() {
-        return beschrijving;
-    }
-
-    public double getPrijs() {
-        return prijs;
+    public boolean isBeschikbaar() {
+        return isBeschikbaar;
     }
 
     public Gebruiker getGebruiker() {
@@ -68,6 +61,7 @@ public class Geschenk {
 
     public void updateGebruiker(Gebruiker gebruiker) {
         this.gebruiker = gebruiker;
+        this.isBeschikbaar = false;
     }
 
     public void updateGeschenkCategorie(GeschenkCategorie geschenkCategorie) {

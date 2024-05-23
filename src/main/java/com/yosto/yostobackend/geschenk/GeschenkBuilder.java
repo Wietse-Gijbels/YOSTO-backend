@@ -9,9 +9,7 @@ public class GeschenkBuilder {
 
     String titel;
 
-    String beschrijving;
-
-    double prijs;
+    boolean isBeschikbaar;
 
     Gebruiker gebruiker;
 
@@ -34,13 +32,8 @@ public class GeschenkBuilder {
         return this;
     }
 
-    public GeschenkBuilder setBeschrijving(String beschrijving) {
-        this.beschrijving = beschrijving;
-        return this;
-    }
-
-    public GeschenkBuilder setPrijs(double prijs) {
-        this.prijs = prijs;
+    public GeschenkBuilder setBeschikbaar(boolean isBeschikbaar) {
+        this.isBeschikbaar = isBeschikbaar;
         return this;
     }
 

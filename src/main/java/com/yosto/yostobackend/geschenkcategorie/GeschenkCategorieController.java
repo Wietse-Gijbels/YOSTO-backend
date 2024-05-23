@@ -33,6 +33,11 @@ public class GeschenkCategorieController {
         return geschenkCategorieService.findAll();
     }
 
+    @GetMapping("/all-beschikbaar")
+    public List<GeschenkCategorie> findAllBeschikbaar() {
+        return geschenkCategorieService.findAllWithBeschikbareGeschenken();
+    }
+
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable UUID id) {
         geschenkCategorieService.deleteById(id);

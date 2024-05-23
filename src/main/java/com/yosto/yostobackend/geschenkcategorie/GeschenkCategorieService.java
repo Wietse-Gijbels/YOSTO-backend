@@ -18,19 +18,25 @@ public class GeschenkCategorieService {
         return geschenkCategorieRepository.findAll();
     }
 
+    public List<GeschenkCategorie> findAllWithBeschikbareGeschenken() {
+        return geschenkCategorieRepository.findAllWithAvailableGeschenken();
+    }
+
     public GeschenkCategorie createGeschenkCategorie(GeschenkCategorie geschenkCategorie) {
         Map<String, String> errors = new HashMap<>();
 
         // Validatiecontrole
-        if (geschenkCategorie.getNaam() == null || geschenkCategorie.getNaam().isBlank() ||
-                geschenkCategorie.getFoto() == null || geschenkCategorie.getFoto().isBlank()) {
+        if (geschenkCategorie.getNaam() == null || geschenkCategorie.getNaam().isBlank()
+        || geschenkCategorie.getBeschrijving() == null || geschenkCategorie.getBeschrijving().isBlank() ||
+        geschenkCategorie.getPrijs() < 0 ) {
             errors.put("createGeschenkCategorie", "Dit is geen geldige categorie voor geschenken.");
             throw new ServiceException(errors);
         }
 
         GeschenkCategorie nieuwGeschenkCategorie = GeschenkCategorieBuilder.geschenkCategorieBuilder()
                 .setNaam(geschenkCategorie.getNaam())
-                .setFoto(geschenkCategorie.getFoto())
+                .setBeschrijving(geschenkCategorie.getBeschrijving())
+                .setPrijs(geschenkCategorie.getPrijs())
                 .build();
         return geschenkCategorieRepository.save(nieuwGeschenkCategorie);
     }

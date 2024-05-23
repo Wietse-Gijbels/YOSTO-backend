@@ -7,7 +7,9 @@ public class GeschenkCategorieBuilder {
 
     String naam;
 
-    String foto;
+    int prijs;
+
+    String beschrijving;
 
     public GeschenkCategorieBuilder() {
     }
@@ -26,8 +28,13 @@ public class GeschenkCategorieBuilder {
         return this;
     }
 
-    public GeschenkCategorieBuilder setFoto(String foto) {
-        this.foto = foto;
+    public GeschenkCategorieBuilder setPrijs(int prijs) {
+        this.prijs = prijs;
+        return this;
+    }
+
+    public GeschenkCategorieBuilder setBeschrijving(String beschrijving) {
+        this.beschrijving = beschrijving;
         return this;
     }
 
