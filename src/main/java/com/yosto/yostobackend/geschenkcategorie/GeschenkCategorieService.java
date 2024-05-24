@@ -31,6 +31,17 @@ public class GeschenkCategorieService {
         return geschenkCategorieRepository.findAll();
     }
 
+    public GeschenkCategorie findById(UUID id) {
+        Map<String, String> errors = new HashMap<>();
+
+        GeschenkCategorie geschenkCategorie =  geschenkCategorieRepository.findById(id).orElse(null);
+        if (geschenkCategorie == null) {
+            errors.put("findGeschenkCategorie", "Er is geen geschenk categorie met dit id.");
+            throw new ServiceException(errors);
+        }
+        return geschenkCategorie;
+    }
+
     public List<GeschenkCategorie> findAllWithBeschikbareGeschenken() {
         return geschenkCategorieRepository.findAllWithAvailableGeschenken();
     }

@@ -83,6 +83,11 @@ public class GeschenkCategorieController {
         return geschenkCategorieService.findAll();
     }
 
+    @GetMapping("/{id}")
+    public GeschenkCategorie findById(@PathVariable UUID id) {
+        return geschenkCategorieService.findById(id);
+    }
+
     @GetMapping("/all-beschikbaar")
     public List<GeschenkCategorie> findAllBeschikbaar() {
         return geschenkCategorieService.findAllWithBeschikbareGeschenken();

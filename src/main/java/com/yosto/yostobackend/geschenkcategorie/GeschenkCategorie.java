@@ -19,6 +19,7 @@ public class GeschenkCategorie {
 
     private int prijs;
 
+    @Column(length = 1000)
     private String beschrijving;
 
     private String fotoUrl;  // Nieuw veld toegevoegd
