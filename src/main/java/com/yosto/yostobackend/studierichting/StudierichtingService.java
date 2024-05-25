@@ -1,8 +1,8 @@
 package com.yosto.yostobackend.studierichting;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class StudierichtingService {
@@ -13,8 +13,7 @@ public class StudierichtingService {
         this.studierichtingRepository = studierichtingRepository;
     }
 
-
-    public List<Studierichting> findAll() {
-        return this.studierichtingRepository.findAll();
+    public Page<Studierichting> findAll(int page, int size) {
+        return studierichtingRepository.findAll(PageRequest.of(page, size));
     }
 }
