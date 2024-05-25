@@ -34,3 +34,6 @@ build/
 
 ## Foto's ##
 src/main/resources/static/images
+
+## EMAIL ##
+src/main/resources/application.properties
