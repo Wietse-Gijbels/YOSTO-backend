@@ -31,8 +31,8 @@ public class GeschenkService {
         Map<String, String> errors = new HashMap<>();
 
         // Validatiecontrole
-        if (geschenk.getTitel() == null || geschenk.getTitel().isBlank() ||
-                geschenk.getGeschenkCategorie() == null || geschenk.getGeschenkCategorie().getId() == null) {
+        if (geschenk.getTitel() == null || geschenk.getTitel().isBlank() || geschenk.getCode().isBlank()
+               || geschenk.getGeschenkCategorie() == null || geschenk.getGeschenkCategorie().getId() == null) {
             errors.put("createGeschenk", "Dit is geen geldig geschenk.");
             throw new ServiceException(errors);
         }
@@ -47,6 +47,7 @@ public class GeschenkService {
         GeschenkCategorie categorie = categorieOpt.get();
         Geschenk nieuwGeschenk = GeschenkBuilder.geschenkBuilder()
                 .setTitel(geschenk.getTitel())
+                .setCode(geschenk.getCode())
                 .setBeschikbaar(true)
                 .setGeschenkCategorie(categorie)
                 .build();

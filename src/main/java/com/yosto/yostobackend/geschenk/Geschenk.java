@@ -16,6 +16,8 @@ public class Geschenk {
 
     private String titel;
 
+    private String code;
+
     private boolean isBeschikbaar;
 
     @ManyToOne
@@ -34,6 +36,7 @@ public class Geschenk {
     public Geschenk(GeschenkBuilder builder) {
         this.titel = builder.titel;
         this.gebruiker = builder.gebruiker;
+        this.code = builder.code;
         this.isBeschikbaar = builder.isBeschikbaar;
         this.geschenkCategorie = builder.geschenkCategorie;
         this.geschenkCategorie.addGeschenk(this);
@@ -45,6 +48,10 @@ public class Geschenk {
 
     public String getTitel() {
         return titel;
+    }
+
+    public String getCode() {
+        return code;
     }
 
     public boolean isBeschikbaar() {

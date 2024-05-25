@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 
 import com.yosto.yostobackend.geschenk.Geschenk;
 import com.yosto.yostobackend.geschenk.GeschenkRepository;
+import com.yosto.yostobackend.geschenkcategorie.GeschenkCategorie;
+import com.yosto.yostobackend.geschenkcategorie.GeschenkCategorieRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.View;
 
@@ -15,12 +17,13 @@ import org.springframework.web.servlet.View;
 public class GebruikerService {
   private final GebruikerRepository repository;
   private final GeschenkRepository geschenkRepository;
-    private final View error;
+  private final GeschenkCategorieRepository geschenkCategorieRepository;
 
-    public GebruikerService(GebruikerRepository repository, GeschenkRepository geschenkRepository, View error) {
+
+    public GebruikerService(GebruikerRepository repository, GeschenkRepository geschenkRepository, GeschenkCategorieRepository geschenkCategorieRepository) {
     this.repository = repository;
         this.geschenkRepository = geschenkRepository;
-        this.error = error;
+        this.geschenkCategorieRepository = geschenkCategorieRepository;
     }
 
   public void disconnect(Gebruiker gebruiker) {
@@ -59,13 +62,23 @@ public class GebruikerService {
       );
   }
 
-    public void addGeschenkToGebruiker(UUID gebruikerId, UUID geschenkId) {
+    public void addGeschenkToGebruiker(UUID gebruikerId, UUID geschenkCategorieId) {
         Map<String, String> errors = new HashMap<>();
         Optional<Gebruiker> gebruikerOpt = repository.findById(gebruikerId);
-        Optional<Geschenk> geschenkOpt = geschenkRepository.findById(geschenkId);
+        Optional<GeschenkCategorie> geschenkCategorie = geschenkCategorieRepository.findById(geschenkCategorieId);
 
-        if (gebruikerOpt.isPresent() && geschenkOpt.isPresent()) {
-            gebruikerOpt.get().addGeschenk(geschenkOpt.get());
+        if (gebruikerOpt.isPresent() && geschenkCategorie.isPresent()) {
+            if (gebruikerOpt.get().getXpAantal() < geschenkCategorie.get().getPrijs()) {
+                errors.put("gebruikerGeschenk", "U heeft te weinig xp voor dit geschenk!");
+                throw new ServiceException(errors);
+            }
+            List<Geschenk> geschenken = geschenkCategorieRepository.findAvailableGeschenkenByCategoryId(geschenkCategorieId);
+            if (geschenken.isEmpty()) {
+                errors.put("gebruikerGeschenk", "Er zijn geen geschenken meer beschikbaar in deze categorie.");
+                throw new ServiceException(errors);
+            }
+            gebruikerOpt.get().addGeschenk(geschenken.get(0),
+                    (gebruikerOpt.get().getXpAantal() - geschenkCategorie.get().getPrijs()));
             repository.save(gebruikerOpt.get());
         } else {
             errors.put("gebruikerGeschenk", "Gebruiker en/of geschenk niet gevonden.");

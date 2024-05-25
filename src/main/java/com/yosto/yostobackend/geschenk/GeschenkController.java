@@ -33,9 +33,9 @@ public class GeschenkController {
         return geschenkService.findAll();
     }
 
-    @PostMapping("/addToGebruiker/{gebruikerId}/{geschenkId}")
-    public ResponseEntity<Void> addGeschenkToGebruiker(@PathVariable UUID gebruikerId, @PathVariable UUID geschenkId) {
-        gebruikerService.addGeschenkToGebruiker(gebruikerId, geschenkId);
+    @PostMapping("/addToGebruiker/{gebruikerId}/{geschenkCategorieId}")
+    public ResponseEntity<Void> addGeschenkToGebruiker(@PathVariable UUID gebruikerId, @PathVariable UUID geschenkCategorieId) {
+        gebruikerService.addGeschenkToGebruiker(gebruikerId, geschenkCategorieId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 

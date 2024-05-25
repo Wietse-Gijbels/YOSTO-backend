@@ -9,6 +9,8 @@ public class GeschenkBuilder {
 
     String titel;
 
+    String code;
+
     boolean isBeschikbaar;
 
     Gebruiker gebruiker;
@@ -29,6 +31,11 @@ public class GeschenkBuilder {
 
     public GeschenkBuilder setTitel(String titel) {
         this.titel = titel;
+        return this;
+    }
+
+    public GeschenkBuilder setCode(String code) {
+        this.code = code;
         return this;
     }
 

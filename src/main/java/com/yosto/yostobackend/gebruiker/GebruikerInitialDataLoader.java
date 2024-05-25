@@ -31,6 +31,7 @@ public class GebruikerInitialDataLoader {
                         .setWoonplaats("helper")
                         .setRol(Rol.STUDYHELPER)
                         .setStatus(Status.ONLINE)
+                        .setXpAantal(300)
                         .build();
 
                 gebruikerRepository.save(gebruiker1);
