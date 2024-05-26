@@ -8,6 +8,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.*;
 
 @RestController
@@ -34,7 +35,7 @@ public class GeschenkController {
     }
 
     @PostMapping("/addToGebruiker/{gebruikerId}/{geschenkCategorieId}")
-    public ResponseEntity<Void> addGeschenkToGebruiker(@PathVariable UUID gebruikerId, @PathVariable UUID geschenkCategorieId) {
+    public ResponseEntity<Void> addGeschenkToGebruiker(@PathVariable UUID gebruikerId, @PathVariable UUID geschenkCategorieId) throws IOException {
         gebruikerService.addGeschenkToGebruiker(gebruikerId, geschenkCategorieId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

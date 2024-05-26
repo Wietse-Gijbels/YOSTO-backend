@@ -1,8 +1,9 @@
 package com.yosto.yostobackend.gebruiker;
 
-import com.yosto.yostobackend.email.EmailSenderService;
+import com.yosto.yostobackend.email.MailService;
 import com.yosto.yostobackend.generic.ServiceException;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.UUID;
 
@@ -17,10 +18,10 @@ public class GebruikerService {
   private final GebruikerRepository repository;
   private final GeschenkRepository geschenkRepository;
   private final GeschenkCategorieRepository geschenkCategorieRepository;
-  private final EmailSenderService emailSenderService;
+  private final MailService emailSenderService;
 
 
-    public GebruikerService(GebruikerRepository repository, GeschenkRepository geschenkRepository, GeschenkCategorieRepository geschenkCategorieRepository, EmailSenderService emailSenderService) {
+    public GebruikerService(GebruikerRepository repository, GeschenkRepository geschenkRepository, GeschenkCategorieRepository geschenkCategorieRepository, MailService emailSenderService) {
     this.repository = repository;
         this.geschenkRepository = geschenkRepository;
         this.geschenkCategorieRepository = geschenkCategorieRepository;
@@ -62,7 +63,7 @@ public class GebruikerService {
       );
   }
 
-    public void addGeschenkToGebruiker(UUID gebruikerId, UUID geschenkCategorieId) {
+    public void addGeschenkToGebruiker(UUID gebruikerId, UUID geschenkCategorieId) throws IOException {
         Map<String, String> errors = new HashMap<>();
         Optional<Gebruiker> gebruikerOpt = repository.findById(gebruikerId);
         Optional<GeschenkCategorie> geschenkCategorie = geschenkCategorieRepository.findById(geschenkCategorieId);
@@ -81,15 +82,16 @@ public class GebruikerService {
             gebruikerOpt.get().addGeschenk(geschenk,
                     (gebruikerOpt.get().getXpAantal() - geschenkCategorie.get().getPrijs()));
             repository.save(gebruikerOpt.get());
-            emailSenderService.sendEmail(
+
+            emailSenderService.sendHtmlEmail(
                     gebruikerOpt.get().getEmail(),
                     "Uw reward ligt klaar in uw mailbox!",
-                    "De code voor uw gekozen geschenk " + geschenkCategorie.get().getNaam() + " is : " + geschenk.getCode() +
-                            " \n Geniet ervan en blijf doorsparen voor uw volgende geschenken! \n\n Groetjes,\n Het Yosto-team" );
-
+                    geschenkCategorie.get().getNaam(),
+                    geschenk.getCode());
         } else {
             errors.put("gebruikerGeschenk", "Gebruiker en/of geschenk niet gevonden.");
             throw new ServiceException(errors);
         }
     }
+
 }
