@@ -3,6 +3,7 @@ package com.yosto.yostobackend.gebruiker;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.yosto.yostobackend.geschenk.Geschenk;
+import com.yosto.yostobackend.studierichting.Studierichting;
 import jakarta.persistence.*;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -41,11 +42,17 @@ public class Gebruiker implements UserDetails {
   @JsonManagedReference(value = "gebruiker-geschenken")
   private List<Geschenk> geschenken = new ArrayList<>();
 
-  // TODO Studies moeten opgehaald worden uit database van studierichtingen waarschijnlijk
-  // private String huidigeStudie;
+  @ManyToOne
+  @JoinColumn(name = "huidige_studierichting_id")
+  private Studierichting huidigeStudie;
 
-  // TODO Studies moeten opgehaald worden uit database van studierichtingen waarschijnlijk
-  // private List<String> behaaldeDiplomas = new ArrayList<>();
+  @ManyToMany
+  @JoinTable(
+          name = "gebruiker_behaalde_diplomas",
+          joinColumns = @JoinColumn(name = "gebruiker_id"),
+          inverseJoinColumns = @JoinColumn(name = "studierichting_id")
+  )
+  private Set<Studierichting> behaaldeDiplomas = new HashSet<>();
 
   @ElementCollection(fetch = FetchType.EAGER)
   @Enumerated(EnumType.STRING)
@@ -78,6 +85,8 @@ public class Gebruiker implements UserDetails {
     this.rollen = Collections.singleton(builder.rol);
     this.status = builder.status;
     this.xpAantal = builder.xpAantal;
+    this.huidigeStudie = builder.huidigeStudie;
+    this.behaaldeDiplomas = builder.behaaldeDiplomas;
   }
 
   public UUID getId() {
@@ -130,6 +139,15 @@ public class Gebruiker implements UserDetails {
 
   public List<Geschenk> getGeschenken() {
     return geschenken;
+  }
+
+  public Studierichting getHuidigeStudie() {
+
+    return huidigeStudie;
+  }
+
+  public Set<Studierichting> getBehaaldeDiplomas() {
+    return behaaldeDiplomas;
   }
 
   public void addGeschenk(Geschenk geschenk, int xpAantalNew) {

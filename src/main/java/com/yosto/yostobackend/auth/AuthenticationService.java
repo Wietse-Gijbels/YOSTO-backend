@@ -9,6 +9,9 @@ import com.yosto.yostobackend.generic.ServiceException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+
+import com.yosto.yostobackend.studierichting.Studierichting;
+import com.yosto.yostobackend.studierichting.StudierichtingService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
@@ -25,16 +28,19 @@ public class AuthenticationService {
 
   private final AuthenticationManager authenticationManager;
 
+  private final StudierichtingService studierichtingService;
+
   public AuthenticationService(
-    GebruikerRepository repository,
-    PasswordEncoder passwordEncoder,
-    JwtService jwtService,
-    AuthenticationManager authenticationManager
+          GebruikerRepository repository,
+          PasswordEncoder passwordEncoder,
+          JwtService jwtService,
+          AuthenticationManager authenticationManager, StudierichtingService studierichtingService
   ) {
     this.repository = repository;
     this.passwordEncoder = passwordEncoder;
     this.jwtService = jwtService;
     this.authenticationManager = authenticationManager;
+      this.studierichtingService = studierichtingService;
   }
 
   public AuthenticationResponse registreer(RegisterRequest request) {
@@ -79,19 +85,23 @@ public class AuthenticationService {
       throw new ServiceException(errors);
     }
 
+    String[] huidigeStudieParts = parseStudierichting(request.getHuidigeStudieAndNiveau());
+    Studierichting huidigeStudie = studierichtingService.findByNaamAndNiveauNaam(huidigeStudieParts[0], huidigeStudieParts[1]);
+
     Gebruiker gebruiker = GebruikerBuilder
       .gebruikerBuilder()
-      .setVoornaam(request.getVoornaam())
-      .setAchternaam(request.getAchternaam())
-      .setGebruikersnaam(request.getGebruikersnaam())
-      .setEmail(request.getEmail().toLowerCase())
-      .setGeslacht(request.getGeslacht())
-      .setLeeftijd(request.getLeeftijd())
-      .setWoonplaats(request.getWoonplaats())
-      .setWachtwoord(passwordEncoder.encode(request.getWachtwoord()))
-      .setRol(request.getRol())
-      .setStatus(Status.ONLINE)
+            .setVoornaam(request.getVoornaam())
+            .setAchternaam(request.getAchternaam())
+            .setGebruikersnaam(request.getGebruikersnaam())
+            .setEmail(request.getEmail().toLowerCase())
+            .setGeslacht(request.getGeslacht())
+            .setLeeftijd(request.getLeeftijd())
+            .setWoonplaats(request.getWoonplaats())
+            .setWachtwoord(passwordEncoder.encode(request.getWachtwoord()))
+            .setRol(request.getRol())
+            .setStatus(Status.ONLINE)
             .setXpAantal(0)
+            .setHuidigeStudie(huidigeStudie)
       .build();
     repository.save(gebruiker);
     String jwtToken = jwtService.generateToken(gebruiker);
@@ -133,5 +143,20 @@ public class AuthenticationService {
       .authenticationResponseBuilder()
       .setToken(jwtToken)
       .build();
+  }
+
+  private String[] parseStudierichting(String input) {
+    Map<String, String> errors = new HashMap<>();
+
+    int index = input.indexOf('(');
+    if (index == -1 || !input.endsWith(")")) {
+      errors.put("errorRichtingParser", "De richting wordt niet met de juiste syntax doorgegeven!");
+      throw new ServiceException(errors);
+    }
+
+    String naam = input.substring(0, index).trim();
+    String niveau = input.substring(index + 1, input.length() - 1).trim();
+
+    return new String[]{naam, niveau};
   }
 }

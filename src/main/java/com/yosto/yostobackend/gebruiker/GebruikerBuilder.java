@@ -1,5 +1,8 @@
 package com.yosto.yostobackend.gebruiker;
 
+import com.yosto.yostobackend.studierichting.Studierichting;
+
+import java.util.Set;
 import java.util.UUID;
 
 public final class GebruikerBuilder {
@@ -26,6 +29,10 @@ public final class GebruikerBuilder {
   int xpAantal;
 
   Rol rol;
+
+  Studierichting huidigeStudie;
+
+  Set<Studierichting> behaaldeDiplomas;
 
   public GebruikerBuilder() {}
 
@@ -90,6 +97,16 @@ public final class GebruikerBuilder {
 
   public GebruikerBuilder setXpAantal(int xpAantal) {
     this.xpAantal = xpAantal;
+    return this;
+  }
+
+  public GebruikerBuilder setHuidigeStudie(Studierichting huidigeStudie) {
+    this.huidigeStudie = huidigeStudie;
+    return this;
+  }
+
+  public GebruikerBuilder setBehaaldeDiplomas(Set<Studierichting> behaaldeDiplomas) {
+    this.behaaldeDiplomas = behaaldeDiplomas;
     return this;
   }
 
