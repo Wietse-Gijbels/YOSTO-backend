@@ -1,15 +1,20 @@
 package com.yosto.yostobackend.chatroom;
 
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+
+import com.yosto.yostobackend.gebruiker.Gebruiker;
+import com.yosto.yostobackend.gebruiker.GebruikerService;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ChatRoomService {
   private final ChatRoomRepository chatRoomRepository;
 
-  public ChatRoomService(ChatRoomRepository chatRoomRepository) {
+  private final GebruikerService gebruikerService;
+
+  public ChatRoomService(ChatRoomRepository chatRoomRepository, GebruikerService gebruikerService) {
     this.chatRoomRepository = chatRoomRepository;
+    this.gebruikerService = gebruikerService;
   }
 
   public Optional<String> getChatRoomId(
@@ -53,5 +58,20 @@ public class ChatRoomService {
     chatRoomRepository.save(recipientSender);
 
     return chatId;
+  }
+  public List<Gebruiker> getMyChatRooms(UUID id) {
+    Set<Gebruiker> users = new HashSet<>();
+
+    List<ChatRoom> chatRooms = chatRoomRepository.findAll();
+
+    for (ChatRoom chatRoom : chatRooms) {
+      if (chatRoom.getSenderId().equals(id)) {
+        users.add(gebruikerService.getGebruikerById(chatRoom.getRecipientId()));
+      } else if (chatRoom.getRecipientId().equals(id)) {
+        users.add(gebruikerService.getGebruikerById(chatRoom.getSenderId()));
+      }
+    }
+
+    return new ArrayList<>(users);
   }
 }
