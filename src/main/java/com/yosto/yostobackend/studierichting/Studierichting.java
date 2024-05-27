@@ -1,10 +1,10 @@
 package com.yosto.yostobackend.studierichting;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.yosto.yostobackend.instelling.Instelling;
+import jakarta.persistence.*;
 
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -17,15 +17,30 @@ public class Studierichting {
 
     private String naam;
 
-    private String soort;
+    private String studiepunten;
 
+    private String niveauNaam;
+
+    private String afstudeerrichting;
+
+
+    @ManyToMany
+    @JoinTable(
+            name = "studierichting_instelling",
+            joinColumns = @JoinColumn(name = "studierichting_id"),
+            inverseJoinColumns = @JoinColumn(name = "instelling_id"))
+    @JsonManagedReference
+    private Set<Instelling> instellingen;
 
     public Studierichting() {
     }
 
     public Studierichting(StudierichtingBuilder builder) {
         this.naam = builder.naam;
-        this.soort = builder.soort;
+        this.studiepunten = builder.studiepunten;
+        this.niveauNaam = builder.niveauNaam;
+        this.afstudeerrichting = builder.afstudeerrichting;
+        this.instellingen = builder.instellingen;
     }
 
     public UUID getId() {
@@ -36,7 +51,19 @@ public class Studierichting {
         return naam;
     }
 
-    public String getSoort() {
-        return soort;
+    public String getStudiepunten() {
+        return studiepunten;
+    }
+
+    public String getNiveauNaam() {
+        return niveauNaam;
+    }
+
+    public String getAfstudeerrichting() {
+        return afstudeerrichting;
+    }
+
+    public Set<Instelling> getInstellingen() {
+        return instellingen;
     }
 }
