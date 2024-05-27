@@ -2,10 +2,11 @@ package com.yosto.yostobackend.gebruiker;
 
 import com.yosto.yostobackend.config.JwtService;
 import com.yosto.yostobackend.generic.ServiceException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+
+import java.util.*;
+
+import com.yosto.yostobackend.lookerQueue.LookerQueue;
+import com.yosto.yostobackend.lookerQueue.LookerQueueService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -25,10 +26,13 @@ import org.springframework.web.server.ResponseStatusException;
 public class GebruikerController {
   private final GebruikerService gebruikerService;
 
+  private final LookerQueueService lookerQueueService;
+
   private final JwtService jwtService;
 
-  public GebruikerController(GebruikerService gebruikerService, JwtService jwtService) {
+  public GebruikerController(GebruikerService gebruikerService, LookerQueueService lookerQueueService, JwtService jwtService) {
     this.gebruikerService = gebruikerService;
+    this.lookerQueueService = lookerQueueService;
     this.jwtService = jwtService;
   }
 
@@ -62,6 +66,10 @@ public class GebruikerController {
     return ResponseEntity.ok(response);
   }
 
+  @GetMapping("/gebruiker/{id}")
+    public Gebruiker getGebruikerById(@PathVariable UUID id) {
+        return gebruikerService.getGebruikerById(id);
+    }
 
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   @ExceptionHandler(
