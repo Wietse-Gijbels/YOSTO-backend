@@ -18,6 +18,8 @@ public class StudierichtingBuilder {
 
     Set<Instelling> instellingen;
 
+    String beschrijving;
+
 
     public StudierichtingBuilder() {
     }
@@ -54,6 +56,11 @@ public class StudierichtingBuilder {
 
     public StudierichtingBuilder setInstellingen(Set<Instelling> instellingen) {
         this.instellingen = instellingen;
+        return this;
+    }
+
+    public StudierichtingBuilder setBeschrijving(String beschrijving) {
+        this.beschrijving = beschrijving;
         return this;
     }
 

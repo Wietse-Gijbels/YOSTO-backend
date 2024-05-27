@@ -23,6 +23,9 @@ public class Studierichting {
 
     private String afstudeerrichting;
 
+    @Column(length = 10000)
+    private String beschrijving;
+
 
     @ManyToMany
     @JoinTable(
@@ -41,6 +44,7 @@ public class Studierichting {
         this.niveauNaam = builder.niveauNaam;
         this.afstudeerrichting = builder.afstudeerrichting;
         this.instellingen = builder.instellingen;
+        this.beschrijving = builder.beschrijving;
     }
 
     public UUID getId() {
@@ -65,5 +69,9 @@ public class Studierichting {
 
     public Set<Instelling> getInstellingen() {
         return instellingen;
+    }
+
+    public String getBeschrijving() {
+        return beschrijving;
     }
 }
