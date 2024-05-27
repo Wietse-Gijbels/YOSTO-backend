@@ -16,7 +16,7 @@ public class GebruikerInitialDataLoader {
             PasswordEncoder passwordEncoder
     ) {
         return args -> {
-            String email = "helper@helper.helper";
+            String email = "kuno.vercammen@gmail.com";
             if (gebruikerRepository.findByEmail(email).isEmpty()) {
                 Gebruiker gebruiker1 = GebruikerBuilder
                         .gebruikerBuilder()
@@ -31,6 +31,7 @@ public class GebruikerInitialDataLoader {
                         .setWoonplaats("helper")
                         .setRol(Rol.STUDYHELPER)
                         .setStatus(Status.ONLINE)
+                        .setXpAantal(300)
                         .build();
 
                 gebruikerRepository.save(gebruiker1);

@@ -23,6 +23,8 @@ public final class GebruikerBuilder {
 
   Status status;
 
+  int xpAantal;
+
   Rol rol;
 
   public GebruikerBuilder() {}
@@ -83,6 +85,11 @@ public final class GebruikerBuilder {
 
   public GebruikerBuilder setStatus(Status status) {
     this.status = status;
+    return this;
+  }
+
+  public GebruikerBuilder setXpAantal(int xpAantal) {
+    this.xpAantal = xpAantal;
     return this;
   }
 

@@ -31,7 +31,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(
                         authz ->
                                 authz
-                                        .requestMatchers("api/v1/auth/**")
+                                        .requestMatchers("/**")
                                         .permitAll()
                                         .anyRequest()
                                         .authenticated()
