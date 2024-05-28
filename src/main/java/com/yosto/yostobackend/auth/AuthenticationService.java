@@ -148,7 +148,7 @@ public class AuthenticationService {
   private String[] parseStudierichting(String input) {
     Map<String, String> errors = new HashMap<>();
 
-    int index = input.indexOf('(');
+    int index = input.lastIndexOf('(');
     if (index == -1 || !input.endsWith(")")) {
       errors.put("errorRichtingParser", "De richting wordt niet met de juiste syntax doorgegeven!");
       throw new ServiceException(errors);

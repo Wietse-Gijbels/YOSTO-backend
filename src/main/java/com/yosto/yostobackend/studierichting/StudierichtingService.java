@@ -6,8 +6,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class StudierichtingService {
@@ -32,5 +34,10 @@ public class StudierichtingService {
             throw new ServiceException(errors);
         }
     }
-
+    public List<String> findAllStudierichtingDTOs() {
+        List<Studierichting> studierichtingen = (List<Studierichting>) studierichtingRepository.findAll();
+        return studierichtingen.stream()
+                .map(s -> new StudierichtingDTO(s.getNaam(), s.getNiveauNaam()).toString())
+                .collect(Collectors.toList());
+    }
 }
