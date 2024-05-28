@@ -91,6 +91,7 @@ public class AuthenticationService {
       .setWachtwoord(passwordEncoder.encode(request.getWachtwoord()))
       .setRol(request.getRol())
       .setStatus(Status.ONLINE)
+            .setXpAantal(0)
       .build();
     repository.save(gebruiker);
     String jwtToken = jwtService.generateToken(gebruiker);

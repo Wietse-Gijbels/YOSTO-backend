@@ -4,6 +4,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 public class StudierichtingService {
 
@@ -15,5 +17,9 @@ public class StudierichtingService {
 
     public Page<Studierichting> findAll(int page, int size) {
         return studierichtingRepository.findAll(PageRequest.of(page, size));
+    }
+
+    public Studierichting findStudierichting(UUID id) {
+        return studierichtingRepository.findById(id);
     }
 }

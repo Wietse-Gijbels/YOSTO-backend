@@ -1,5 +1,8 @@
 package com.yosto.yostobackend.gebruiker;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.yosto.yostobackend.geschenk.Geschenk;
 import jakarta.persistence.*;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -31,6 +34,12 @@ public class Gebruiker implements UserDetails {
   private String woonplaats;
 
   private Status status;
+
+  private int xpAantal;
+
+  @OneToMany(mappedBy = "gebruiker", cascade = CascadeType.ALL, orphanRemoval = true)
+  @JsonManagedReference(value = "gebruiker-geschenken")
+  private List<Geschenk> geschenken = new ArrayList<>();
 
   // TODO Studies moeten opgehaald worden uit database van studierichtingen waarschijnlijk
   // private String huidigeStudie;
@@ -68,6 +77,7 @@ public class Gebruiker implements UserDetails {
     this.woonplaats = builder.woonplaats;
     this.rollen = Collections.singleton(builder.rol);
     this.status = builder.status;
+    this.xpAantal = builder.xpAantal;
   }
 
   public UUID getId() {
@@ -112,6 +122,20 @@ public class Gebruiker implements UserDetails {
 
   public Status getStatus() {
     return status;
+  }
+
+  public int getXpAantal() {
+    return xpAantal;
+  }
+
+  public List<Geschenk> getGeschenken() {
+    return geschenken;
+  }
+
+  public void addGeschenk(Geschenk geschenk, int xpAantalNew) {
+    geschenken.add(geschenk);
+    geschenk.updateGebruiker(this);
+    this.xpAantal = xpAantalNew;
   }
 
   @Override
