@@ -1,5 +1,7 @@
 package com.yosto.yostobackend.gebruiker;
 
+import com.yosto.yostobackend.auth.AuthenticationRequest;
+import com.yosto.yostobackend.auth.AuthenticationService;
 import com.yosto.yostobackend.generic.ServiceException;
 
 import java.util.*;
@@ -11,9 +13,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class GebruikerService {
     private final GebruikerRepository repository;
+    private final AuthenticationService authenticationService;
 
-    public GebruikerService(GebruikerRepository repository) {
+    public GebruikerService(GebruikerRepository repository, AuthenticationService authenticationService) {
         this.repository = repository;
+        this.authenticationService = authenticationService;
     }
 
     public void disconnect(Gebruiker gebruiker) {
@@ -54,17 +58,19 @@ public class GebruikerService {
 
     public Gebruiker updateGebruiker(String email, UpdateGebruikerDTO gebruiker) {
         Gebruiker oudeGebruiker = getGebruikerByEmail(email);
+        repository.delete(oudeGebruiker);
         return repository.save(new GebruikerBuilder()
                 .setId(oudeGebruiker.getId())
                 .setVoornaam(gebruiker.voornaam())
                 .setAchternaam(gebruiker.achternaam())
-                .setEmail(gebruiker.email())
+                .setEmail(oudeGebruiker.getEmail())
                 .setWoonplaats(gebruiker.woonplaats())
                 .setStatus(oudeGebruiker.getStatus())
                 .setRol(oudeGebruiker.getRollen().stream().toList().get(0))
-                .setLeeftijd(oudeGebruiker.getLeeftijd())
-                .setGeslacht(oudeGebruiker.getGeslacht())
+                .setLeeftijd(gebruiker.leeftijd())
+                .setGeslacht(gebruiker.geslacht())
                 .setWachtwoord(oudeGebruiker.getWachtwoord())
+                .setGebruikersnaam(oudeGebruiker.getGebruikersnaam())
                 .build());
     }
 }
