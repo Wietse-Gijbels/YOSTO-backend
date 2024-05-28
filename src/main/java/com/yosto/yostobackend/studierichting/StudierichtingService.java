@@ -40,4 +40,35 @@ public class StudierichtingService {
                 .map(s -> new StudierichtingDTO(s.getNaam(), s.getNiveauNaam()).toString())
                 .collect(Collectors.toList());
     }
+
+    public List<String> findHogerOnderwijsRichtingenDTOs(String filter) {
+        List<Studierichting> studierichtingen;
+        if (filter == null || filter.isEmpty() || filter.isBlank()) {
+            studierichtingen = studierichtingRepository.findHogerOnderwijsRichtingen();
+        } else {
+            studierichtingen = studierichtingRepository.findHogerOnderwijsRichtingenWithFilter(filter);
+        }
+        return studierichtingen.stream()
+                .map(s -> new StudierichtingDTO(s.getNaam(), s.getNiveauNaam()).toString())
+                .collect(Collectors.toList());
+    }
+
+    public List<String> findMiddelbaarOnderwijsRichtingenDTOs(String filter) {
+        List<Studierichting> studierichtingen;
+        if (filter == null || filter.isEmpty() || filter.isBlank()) {
+            studierichtingen = studierichtingRepository.findMiddelbaarOnderwijsRichtingen();
+        } else {
+            studierichtingen = studierichtingRepository.findMiddelbaarOnderwijsRichtingenWithFilter(filter);
+        }
+        return studierichtingen.stream()
+                .map(s -> new StudierichtingDTO(s.getNaam(), s.getNiveauNaam()).toString())
+                .collect(Collectors.toList());
+    }
+
+    public List<String> findAllRichtingenDTOs(String filter) {
+        List<Studierichting> studierichtingen = studierichtingRepository.findAllRichtingenWithFilter(filter);
+        return studierichtingen.stream()
+                .map(s -> new StudierichtingDTO(s.getNaam(), s.getNiveauNaam()).toString())
+                .collect(Collectors.toList());
+    }
 }

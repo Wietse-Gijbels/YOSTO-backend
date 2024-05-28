@@ -81,12 +81,24 @@ public class AuthenticationService {
     //            errors.put("errorAdmin", "U heeft geen rechten om een admin account aan te maken.");
     //        }
 
+    parseStudierichting(request.getHuidigeStudieAndNiveau(), errors);
+
+    if (errors.containsKey("errorRichtingParser")) {
+      throw new ServiceException(errors);
+    }
+
+    String naam = errors.get("naam");
+    String niveau = errors.get("niveau");
+    if (naam == null || niveau == null) {
+      errors.put("errorRichtingParser", "Kies een richting uit de lijst!");
+      throw new ServiceException(errors);
+    }
+
     if (!errors.isEmpty()) {
       throw new ServiceException(errors);
     }
 
-    String[] huidigeStudieParts = parseStudierichting(request.getHuidigeStudieAndNiveau());
-    Studierichting huidigeStudie = studierichtingService.findByNaamAndNiveauNaam(huidigeStudieParts[0], huidigeStudieParts[1]);
+    Studierichting huidigeStudie = studierichtingService.findByNaamAndNiveauNaam(naam, niveau);
 
     Gebruiker gebruiker = GebruikerBuilder
       .gebruikerBuilder()
@@ -145,18 +157,18 @@ public class AuthenticationService {
       .build();
   }
 
-  private String[] parseStudierichting(String input) {
-    Map<String, String> errors = new HashMap<>();
-
+  private void parseStudierichting(String input, Map<String, String> errors) {
     int index = input.lastIndexOf('(');
     if (index == -1 || !input.endsWith(")")) {
-      errors.put("errorRichtingParser", "De richting wordt niet met de juiste syntax doorgegeven!");
-      throw new ServiceException(errors);
+      errors.put("errorRichtingParser", "Kies een richting uit de lijst!");
+      return;
     }
 
     String naam = input.substring(0, index).trim();
     String niveau = input.substring(index + 1, input.length() - 1).trim();
 
-    return new String[]{naam, niveau};
+    errors.put("naam", naam);
+    errors.put("niveau", niveau);
   }
+
 }

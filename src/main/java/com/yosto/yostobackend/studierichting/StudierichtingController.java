@@ -23,9 +23,23 @@ public class StudierichtingController {
                                         @RequestParam(defaultValue = "20") int size) {
         return studierichtingService.findAll(page, size);
     }
-
     @GetMapping("/dto")
     public List<String> findAllStudierichtingDTOs() {
         return studierichtingService.findAllStudierichtingDTOs();
+    }
+
+    @GetMapping("/hoger-onderwijs/dto")
+    public List<String> findHogerOnderwijsRichtingenDTOs(@RequestParam(required = false) String filter) {
+        return studierichtingService.findHogerOnderwijsRichtingenDTOs(filter);
+    }
+
+    @GetMapping("/middelbaar-onderwijs/dto")
+    public List<String> findMiddelbaarOnderwijsRichtingenDTOs(@RequestParam(required = false) String filter) {
+        return studierichtingService.findMiddelbaarOnderwijsRichtingenDTOs(filter);
+    }
+
+    @GetMapping("/all/dto")
+    public List<String> findAllRichtingenDTOs(@RequestParam(required = false) String filter) {
+        return studierichtingService.findAllRichtingenDTOs(filter);
     }
 }
