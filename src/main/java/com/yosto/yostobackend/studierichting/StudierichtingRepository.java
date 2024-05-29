@@ -2,5 +2,9 @@ package com.yosto.yostobackend.studierichting;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
 
-public interface StudierichtingRepository extends PagingAndSortingRepository<Studierichting, Long> {
+import java.util.UUID;
+
+public interface StudierichtingRepository extends PagingAndSortingRepository<Studierichting, UUID> {
+
+    Studierichting findById(UUID id);
 }
