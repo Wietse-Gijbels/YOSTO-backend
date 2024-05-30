@@ -1,6 +1,6 @@
 package com.yosto.yostobackend.studierichting;
 
-import com.yosto.yostobackend.instelling.Instelling;
+import com.yosto.yostobackend.Afstudeerrichting.Afstudeerrichting;
 
 import java.util.Set;
 import java.util.UUID;
@@ -16,7 +16,7 @@ public class StudierichtingBuilder {
 
     String afstudeerrichting;
 
-    Set<Instelling> instellingen;
+    Set<Afstudeerrichting> afstudeerrichtingen;
 
     String beschrijving;
 
@@ -54,8 +54,8 @@ public class StudierichtingBuilder {
         return this;
     }
 
-    public StudierichtingBuilder setInstellingen(Set<Instelling> instellingen) {
-        this.instellingen = instellingen;
+    public StudierichtingBuilder setAfstudeerrichtingen(Set<Afstudeerrichting> afstudeerrichtingen) {
+        this.afstudeerrichting = afstudeerrichting;
         return this;
     }
 
