@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface GeschenkCategorieRepository extends JpaRepository<GeschenkCategorie, UUID> {
@@ -14,4 +15,7 @@ public interface GeschenkCategorieRepository extends JpaRepository<GeschenkCateg
 
     @Query("SELECT g FROM Geschenk g JOIN g.geschenkCategorie gc WHERE gc.id = :categoryId AND g.isBeschikbaar = true")
     List<Geschenk> findAvailableGeschenkenByCategoryId(UUID categoryId);
+
+    Optional<GeschenkCategorie> findByNaam(String naam);
+
 }

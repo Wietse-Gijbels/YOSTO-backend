@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import java.util.UUID;
+
 @Service
 public class StudierichtingService {
 
@@ -22,6 +24,10 @@ public class StudierichtingService {
 
     public Page<Studierichting> findAll(int page, int size) {
         return studierichtingRepository.findAll(PageRequest.of(page, size));
+    }
+
+    public Studierichting findStudierichting(UUID id) {
+        return studierichtingRepository.findById(id);
     }
 
     public Studierichting findByNaamAndNiveauNaam(String naam, String niveauNaam) {

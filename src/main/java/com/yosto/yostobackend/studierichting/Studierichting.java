@@ -1,7 +1,7 @@
 package com.yosto.yostobackend.studierichting;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.yosto.yostobackend.instelling.Instelling;
+import com.yosto.yostobackend.Afstudeerrichting.Afstudeerrichting;
 import jakarta.persistence.*;
 
 import java.util.Set;
@@ -21,16 +21,10 @@ public class Studierichting {
 
     private String niveauNaam;
 
-    private String afstudeerrichting;
 
-
-    @ManyToMany
-    @JoinTable(
-            name = "studierichting_instelling",
-            joinColumns = @JoinColumn(name = "studierichting_id"),
-            inverseJoinColumns = @JoinColumn(name = "instelling_id"))
+    @OneToMany(mappedBy = "studierichting", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
-    private Set<Instelling> instellingen;
+    private Set<Afstudeerrichting> afstudeerrichtingen;
 
     public Studierichting() {
     }
@@ -39,8 +33,7 @@ public class Studierichting {
         this.naam = builder.naam;
         this.studiepunten = builder.studiepunten;
         this.niveauNaam = builder.niveauNaam;
-        this.afstudeerrichting = builder.afstudeerrichting;
-        this.instellingen = builder.instellingen;
+        this.afstudeerrichtingen = builder.afstudeerrichtingen;
     }
 
     public UUID getId() {
@@ -59,11 +52,7 @@ public class Studierichting {
         return niveauNaam;
     }
 
-    public String getAfstudeerrichting() {
-        return afstudeerrichting;
-    }
-
-    public Set<Instelling> getInstellingen() {
-        return instellingen;
+    public Set<Afstudeerrichting> getAfstudeerrichtingen() {
+        return afstudeerrichtingen;
     }
 }

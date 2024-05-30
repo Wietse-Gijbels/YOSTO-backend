@@ -10,6 +10,8 @@ import java.util.UUID;
 public interface StudierichtingRepository extends PagingAndSortingRepository<Studierichting, UUID> {
     Optional<Studierichting> findByNaamAndNiveauNaam(String naam, String niveauNaam);
 
+    Studierichting findById(UUID id);
+
     List<Studierichting> findAll();
 
     @Query("SELECT s FROM Studierichting s WHERE s.niveauNaam IN ('Academische bachelor', 'Master', 'Bachelor-na-bachelor', 'Graduaatsopleiding', 'Professionele bachelor')")

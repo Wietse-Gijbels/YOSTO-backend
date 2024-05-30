@@ -1,7 +1,7 @@
 package com.yosto.yostobackend.instelling;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.yosto.yostobackend.studierichting.Studierichting;
+import com.yosto.yostobackend.Afstudeerrichting.Afstudeerrichting;
 import jakarta.persistence.*;
 
 import java.util.Set;
@@ -27,7 +27,7 @@ public class Instelling {
 
     @ManyToMany(mappedBy = "instellingen")
     @JsonBackReference
-    Set<Studierichting> studierichtingen;
+    Set<Afstudeerrichting> afstudeerrichtingen;
 
 
     public Instelling() {
@@ -39,7 +39,6 @@ public class Instelling {
         this.postcode = builder.postcode;
         this.gemeente = builder.gemeente;
         this.adres = builder.adres;
-        this.studierichtingen = builder.studierichtingen;
     }
 
     public UUID getId() {
@@ -66,7 +65,7 @@ public class Instelling {
         return adres;
     }
 
-    public Set<Studierichting> getStudierichtingen() {
-        return studierichtingen;
+    public Set<Afstudeerrichting> getAfstudeerrichtingen() {
+        return afstudeerrichtingen;
     }
 }
