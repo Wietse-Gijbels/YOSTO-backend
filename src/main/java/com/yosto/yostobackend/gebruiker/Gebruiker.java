@@ -56,6 +56,9 @@ public class Gebruiker implements UserDetails {
   @Column(name = "rol")
   private Set<Rol> rollen;
 
+  @Column(name = "actieve_rol")
+  private Rol actieveRol;
+
   public void disconnect() {
     this.status = Status.OFFLINE;
   }
@@ -75,9 +78,10 @@ public class Gebruiker implements UserDetails {
     this.geslacht = builder.geslacht;
     this.leeftijd = builder.leeftijd;
     this.woonplaats = builder.woonplaats;
-    this.rollen = Collections.singleton(builder.rol);
+    this.rollen = builder.rol;
     this.status = builder.status;
     this.xpAantal = builder.xpAantal;
+    this.actieveRol = builder.actieveRol;
   }
 
   public UUID getId() {
@@ -132,6 +136,10 @@ public class Gebruiker implements UserDetails {
     return geschenken;
   }
 
+    public Rol setActieveRol() {
+        return actieveRol;
+    }
+
   public void addGeschenk(Geschenk geschenk, int xpAantalNew) {
     geschenken.add(geschenk);
     geschenk.updateGebruiker(this);
@@ -174,5 +182,9 @@ public class Gebruiker implements UserDetails {
   @Override
   public boolean isEnabled() {
     return true;
+  }
+
+  public Rol getActieveRol() {
+    return actieveRol;
   }
 }

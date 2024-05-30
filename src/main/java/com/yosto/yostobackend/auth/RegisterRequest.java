@@ -2,6 +2,8 @@ package com.yosto.yostobackend.auth;
 
 import com.yosto.yostobackend.gebruiker.Rol;
 
+import java.util.Set;
+
 public class RegisterRequest {
   private String voornaam;
 
@@ -19,7 +21,9 @@ public class RegisterRequest {
 
   private String woonplaats;
 
-  private Rol rol;
+  private Set<Rol> rol;
+
+  private Rol actieveRol;
 
   public RegisterRequest() {}
 
@@ -32,7 +36,8 @@ public class RegisterRequest {
     String geslacht,
     int leeftijd,
     String woonplaats,
-    Rol rol
+    Set<Rol> rol,
+    Rol actieveRol
   ) {
     this.voornaam = voornaam;
     this.achternaam = achternaam;
@@ -43,6 +48,7 @@ public class RegisterRequest {
     this.leeftijd = leeftijd;
     this.woonplaats = woonplaats;
     this.rol = rol;
+    this.actieveRol = actieveRol;
   }
 
   public String getVoornaam() {
@@ -77,7 +83,11 @@ public class RegisterRequest {
     return woonplaats;
   }
 
-  public Rol getRol() {
+  public Set<Rol> getRol() {
     return rol;
   }
+
+  public Rol getActieveRol() {
+        return actieveRol;
+    }
 }

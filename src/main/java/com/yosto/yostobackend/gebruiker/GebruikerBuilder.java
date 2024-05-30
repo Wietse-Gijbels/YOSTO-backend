@@ -1,5 +1,6 @@
 package com.yosto.yostobackend.gebruiker;
 
+import java.util.Set;
 import java.util.UUID;
 
 public final class GebruikerBuilder {
@@ -25,7 +26,9 @@ public final class GebruikerBuilder {
 
   int xpAantal;
 
-  Rol rol;
+  Set<Rol> rol;
+
+  Rol actieveRol;
 
   public GebruikerBuilder() {}
 
@@ -78,7 +81,7 @@ public final class GebruikerBuilder {
     return this;
   }
 
-  public GebruikerBuilder setRol(Rol rol) {
+  public GebruikerBuilder setRol(Set<Rol> rol) {
     this.rol = rol;
     return this;
   }
@@ -90,6 +93,11 @@ public final class GebruikerBuilder {
 
   public GebruikerBuilder setXpAantal(int xpAantal) {
     this.xpAantal = xpAantal;
+    return this;
+  }
+
+  public GebruikerBuilder setActieveRol(Rol actieveRol) {
+    this.actieveRol = actieveRol;
     return this;
   }
 
