@@ -34,10 +34,6 @@ public class GebruikerService {
         repository.save(gebruiker);
     }
 
-    public List<Gebruiker> findConnectedGebruikers() {
-        return repository.findAllByStatus(Status.ONLINE);
-    }
-
     public Gebruiker getGebruikerByEmail(String email) {
         Map<String, String> errors = new HashMap<>();
 
@@ -74,7 +70,7 @@ public class GebruikerService {
                 .setEmail(oudeGebruiker.getEmail())
                 .setWoonplaats(gebruiker.woonplaats())
                 .setStatus(oudeGebruiker.getStatus())
-                .setRol(oudeGebruiker.getRollen().stream().toList().get(0))
+                .setRol(oudeGebruiker.getRollen())
                 .setLeeftijd(gebruiker.leeftijd())
                 .setGeslacht(gebruiker.geslacht())
                 .setWachtwoord(oudeGebruiker.getWachtwoord())
@@ -112,6 +108,10 @@ public class GebruikerService {
             errors.put("gebruikerGeschenk", "Gebruiker en/of geschenk niet gevonden.");
             throw new ServiceException(errors);
         }
+    }
+
+    public Rol getRoleByEmail(String email) {
+        return getGebruikerByEmail(email).getActieveRol();
     }
 
 }

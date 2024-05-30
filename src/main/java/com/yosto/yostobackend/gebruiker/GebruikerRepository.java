@@ -13,5 +13,4 @@ public interface GebruikerRepository extends JpaRepository<Gebruiker, UUID> {
   @NonNull
   Optional<Gebruiker> findById(@NonNull UUID id);
 
-  List<Gebruiker> findAllByStatus(Status status);
 }

@@ -48,11 +48,6 @@ public class GebruikerController {
     return gebruiker;
   }
 
-  @GetMapping("/online")
-  public List<Gebruiker> getConnectedGebruikers() {
-    return gebruikerService.findConnectedGebruikers();
-  }
-
   @GetMapping("/email/{token}")
   public String getEmailFromToken(@PathVariable String token) {
     return jwtService.extractEmail(token);
@@ -76,6 +71,11 @@ public class GebruikerController {
         gebruiker
         );
     }
+
+  @GetMapping("/rol/{token}")
+  public Rol getRoleFromToken(@PathVariable String token) {
+    return gebruikerService.getRoleByEmail(jwtService.extractEmail(token));
+  }
 
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   @ExceptionHandler(
