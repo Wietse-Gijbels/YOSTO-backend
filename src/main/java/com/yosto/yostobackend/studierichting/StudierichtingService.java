@@ -2,6 +2,7 @@ package com.yosto.yostobackend.studierichting;
 
 import com.yosto.yostobackend.generic.ServiceException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -76,5 +77,30 @@ public class StudierichtingService {
         return studierichtingen.stream()
                 .map(s -> new StudierichtingDTO(s.getNaam(), s.getNiveauNaam()).toString())
                 .collect(Collectors.toList());
+    }
+
+    public Page<StudierichtingDTO> findHogerOnderwijsRichtingenByNaamAndNiveauNaam(String naam, String niveauNaam, int page, int size) {
+        List<Studierichting> studierichtingen;
+        try {
+            studierichtingen = studierichtingRepository.findHogerOnderwijsRichtingenWithOptionalFilters(naam, niveauNaam);
+        } catch (Exception e) {
+            Map<String, String> errors = new HashMap<>();
+            errors.put("errorFind", "Er is een fout opgetreden bij het zoeken naar studierichtingen.");
+            throw new ServiceException(errors);
+        }
+        if (studierichtingen.isEmpty()) {
+            Map<String, String> errors = new HashMap<>();
+            errors.put("errorNoResults", "Geen studierichtingen gevonden met de gegeven filters.");
+            throw new ServiceException(errors);
+        }
+
+        int start = (int) PageRequest.of(page, size).getOffset();
+        int end = Math.min((start + PageRequest.of(page, size).getPageSize()), studierichtingen.size());
+
+        List<StudierichtingDTO> dtoList = studierichtingen.subList(start, end).stream()
+                .map(s -> new StudierichtingDTO(s.getNaam(), s.getNiveauNaam()))
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(dtoList, PageRequest.of(page, size), studierichtingen.size());
     }
 }

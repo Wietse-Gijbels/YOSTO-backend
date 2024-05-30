@@ -101,31 +101,33 @@ public class AuthenticationService {
       huidigeStudie = new Studierichting();
       errors.put("errorRichtingParser", e.getMessage().replace("[", "").replace("]",""));
     }
-    // Studierichting huidigeStudie = studierichtingService.findByNaamAndNiveauNaam(naam, niveau);
 
     Set<Studierichting> behaaldeDiplomas = new HashSet<>();
-    for (String diploma : request.getBehaaldeDiplomas()) {
-      Map<String, String> parseErrors = new HashMap<>();
-      if (diploma.isBlank()) {
-        break;
-      }
-      parseStudierichting(diploma, parseErrors);
-      if (parseErrors.containsKey("naam") && parseErrors.containsKey("niveau")) {
-        String diplomaNaam = parseErrors.get("naam");
-        String diplomaNiveau = parseErrors.get("niveau");
-        Studierichting behaaldeStudie;
-        try {
-          behaaldeStudie = studierichtingService.findByNaamAndNiveauNaam(diplomaNaam, diplomaNiveau);
-        } catch (ServiceException e) {
+    // Studierichting huidigeStudie = studierichtingService.findByNaamAndNiveauNaam(naam, niveau);
+    if (request.getBehaaldeDiplomas() != null) {
+      for (String diploma : request.getBehaaldeDiplomas()) {
+        Map<String, String> parseErrors = new HashMap<>();
+        if (diploma.isBlank()) {
+          break;
+        }
+        parseStudierichting(diploma, parseErrors);
+        if (parseErrors.containsKey("naam") && parseErrors.containsKey("niveau")) {
+          String diplomaNaam = parseErrors.get("naam");
+          String diplomaNiveau = parseErrors.get("niveau");
+          Studierichting behaaldeStudie;
+          try {
+            behaaldeStudie = studierichtingService.findByNaamAndNiveauNaam(diplomaNaam, diplomaNiveau);
+          } catch (ServiceException e) {
+            errors.put("errorDiplomaParser", "Kies enkel richtingen uit de lijst!");
+            behaaldeStudie = null;
+          }
+          if (behaaldeStudie != null) {
+            behaaldeDiplomas.add(behaaldeStudie);
+          }
+        } else {
           errors.put("errorDiplomaParser", "Kies enkel richtingen uit de lijst!");
-          behaaldeStudie = null;
+          // throw new ServiceException(errors);
         }
-        if (behaaldeStudie != null) {
-          behaaldeDiplomas.add(behaaldeStudie);
-        }
-      } else {
-        errors.put("errorDiplomaParser", "Kies enkel richtingen uit de lijst!");
-        // throw new ServiceException(errors);
       }
     }
 

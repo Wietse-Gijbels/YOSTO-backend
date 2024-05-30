@@ -21,15 +21,11 @@ public class StudierichtingController {
         this.studierichtingService = studierichtingService;
     }
 
-    @GetMapping()
-    public Page<Studierichting> findAll(@RequestParam(defaultValue = "0") int page,
-                                        @RequestParam(defaultValue = "20") int size) {
-        return studierichtingService.findAll(page, size);
-    }
     @GetMapping("/dto")
     public List<String> findAllStudierichtingDTOs() {
         return studierichtingService.findAllStudierichtingDTOs();
     }
+
     @GetMapping("/all/{page}")
     public Page<Studierichting> findAll(@PathVariable() int page) {
         return studierichtingService.findAll(page, 10);
@@ -48,9 +44,19 @@ public class StudierichtingController {
     @GetMapping("/all/dto")
     public List<String> findAllRichtingenDTOs(@RequestParam(required = false) String filter) {
         return studierichtingService.findAllRichtingenDTOs(filter);
-        }
+    }
+
     @GetMapping("/{id}")
     public Studierichting findStudierichting(@PathVariable() UUID id) {
         return studierichtingService.findStudierichting(id);
+    }
+
+    @GetMapping("/filter")
+    public Page<StudierichtingDTO> getFilteredStudierichtingen(
+            @RequestParam(required = false) String naam,
+            @RequestParam(required = false) String niveauNaam,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return studierichtingService.findHogerOnderwijsRichtingenByNaamAndNiveauNaam(naam, niveauNaam, page, size);
     }
 }
