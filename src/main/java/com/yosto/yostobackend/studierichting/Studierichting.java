@@ -21,7 +21,6 @@ public class Studierichting {
 
     private String niveauNaam;
 
-
     @OneToMany(mappedBy = "studierichting", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private Set<Afstudeerrichting> afstudeerrichtingen;

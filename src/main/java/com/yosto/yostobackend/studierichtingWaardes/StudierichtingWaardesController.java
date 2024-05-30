@@ -17,11 +17,6 @@ public class StudierichtingWaardesController {
         this.service = service;
     }
 
-    @PostMapping
-    public ResponseEntity<StudierichtingWaardes> create(@RequestBody StudierichtingWaardes waardes) {
-        return new ResponseEntity<>(service.save(waardes), HttpStatus.CREATED);
-    }
-
     @GetMapping
     public ResponseEntity<List<StudierichtingWaardes>> getAll() {
         return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
@@ -36,5 +31,10 @@ public class StudierichtingWaardesController {
     public ResponseEntity<Void> deleteById(@PathVariable UUID id) {
         service.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping("/similarity")
+    public ResponseEntity<List<StudierichtingSimilarityDto>> calculateSimilarity(@RequestBody UserValuesDto userValues) {
+        return new ResponseEntity<>(service.calculateSimilarity(userValues), HttpStatus.OK);
     }
 }
