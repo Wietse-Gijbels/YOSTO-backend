@@ -30,9 +30,11 @@ public interface StudierichtingRepository extends PagingAndSortingRepository<Stu
     @Query("SELECT s FROM Studierichting s WHERE LOWER(s.naam) LIKE LOWER(CONCAT('%', :filter, '%'))")
     List<Studierichting> findAllRichtingenWithFilter(String filter);
 
-    @Query("SELECT s FROM Studierichting s WHERE " +
+    @Query("SELECT DISTINCT s FROM Studierichting s LEFT JOIN FETCH s.afstudeerrichtingen a LEFT JOIN FETCH a.instellingen i WHERE " +
             "(:naam IS NULL OR :naam = '' OR LOWER(s.naam) LIKE LOWER(CONCAT('%', :naam, '%'))) AND " +
             "(:niveauNaam IS NULL OR :niveauNaam = '' OR LOWER(s.niveauNaam) LIKE LOWER(CONCAT('%', :niveauNaam, '%'))) " +
             "AND s.niveauNaam IN ('Academische bachelor', 'Master', 'Bachelor-na-bachelor', 'Graduaatsopleiding', 'Professionele bachelor')")
     List<Studierichting> findHogerOnderwijsRichtingenWithOptionalFilters(@Param("naam") String naam, @Param("niveauNaam") String niveauNaam);
+
+
 }

@@ -6,13 +6,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
-
-import java.util.UUID;
 
 @Service
 public class StudierichtingService {
@@ -79,7 +74,7 @@ public class StudierichtingService {
                 .collect(Collectors.toList());
     }
 
-    public Page<StudierichtingDTO> findHogerOnderwijsRichtingenByNaamAndNiveauNaam(String naam, String niveauNaam, int page, int size) {
+    public Page<Studierichting> findHogerOnderwijsRichtingenByNaamAndNiveauNaam(String naam, String niveauNaam, String sortOrder, int page, int size) {
         List<Studierichting> studierichtingen;
         try {
             studierichtingen = studierichtingRepository.findHogerOnderwijsRichtingenWithOptionalFilters(naam, niveauNaam);
@@ -94,13 +89,23 @@ public class StudierichtingService {
             throw new ServiceException(errors);
         }
 
+        // Perform sorting based on the sortOrder parameter
+        if ("asc".equalsIgnoreCase(sortOrder)) {
+            studierichtingen = studierichtingen.stream()
+                    .sorted(Comparator.comparing(Studierichting::getNaam))
+                    .collect(Collectors.toList());
+        } else if ("desc".equalsIgnoreCase(sortOrder)) {
+            studierichtingen = studierichtingen.stream()
+                    .sorted(Comparator.comparing(Studierichting::getNaam).reversed())
+                    .collect(Collectors.toList());
+        }
+
         int start = (int) PageRequest.of(page, size).getOffset();
         int end = Math.min((start + PageRequest.of(page, size).getPageSize()), studierichtingen.size());
 
-        List<StudierichtingDTO> dtoList = studierichtingen.subList(start, end).stream()
-                .map(s -> new StudierichtingDTO(s.getNaam(), s.getNiveauNaam()))
-                .collect(Collectors.toList());
+        List<Studierichting> paginatedList = studierichtingen.subList(start, end);
 
-        return new PageImpl<>(dtoList, PageRequest.of(page, size), studierichtingen.size());
+        return new PageImpl<>(paginatedList, PageRequest.of(page, size), studierichtingen.size());
     }
+
 }
