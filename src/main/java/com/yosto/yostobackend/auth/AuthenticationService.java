@@ -6,9 +6,11 @@ import com.yosto.yostobackend.gebruiker.GebruikerBuilder;
 import com.yosto.yostobackend.gebruiker.GebruikerRepository;
 import com.yosto.yostobackend.gebruiker.Status;
 import com.yosto.yostobackend.generic.ServiceException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+
+import java.util.*;
+
+import com.yosto.yostobackend.studierichting.Studierichting;
+import com.yosto.yostobackend.studierichting.StudierichtingService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
@@ -25,16 +27,19 @@ public class AuthenticationService {
 
   private final AuthenticationManager authenticationManager;
 
+  private final StudierichtingService studierichtingService;
+
   public AuthenticationService(
-    GebruikerRepository repository,
-    PasswordEncoder passwordEncoder,
-    JwtService jwtService,
-    AuthenticationManager authenticationManager
+          GebruikerRepository repository,
+          PasswordEncoder passwordEncoder,
+          JwtService jwtService,
+          AuthenticationManager authenticationManager, StudierichtingService studierichtingService
   ) {
     this.repository = repository;
     this.passwordEncoder = passwordEncoder;
     this.jwtService = jwtService;
     this.authenticationManager = authenticationManager;
+      this.studierichtingService = studierichtingService;
   }
 
   public AuthenticationResponse registreer(RegisterRequest request) {
@@ -75,24 +80,81 @@ public class AuthenticationService {
     //            errors.put("errorAdmin", "U heeft geen rechten om een admin account aan te maken.");
     //        }
 
+    parseStudierichting(request.getHuidigeStudieAndNiveau(), errors);
+
+    // if (errors.containsKey("errorRichtingParser")) {
+    //  throw new ServiceException(errors);
+    // }
+
+    String naam = errors.get("naam");
+    String niveau = errors.get("niveau");
+    if (naam == null || niveau == null) {
+      errors.put("errorRichtingParser", "Kies een richting uit de lijst!");
+      // throw new ServiceException(errors);
+    }
+
+    Studierichting huidigeStudie;
+
+    try {
+      huidigeStudie = studierichtingService.findByNaamAndNiveauNaam(naam, niveau);
+    } catch (ServiceException e) {
+      huidigeStudie = new Studierichting();
+      errors.put("errorRichtingParser", e.getMessage().replace("[", "").replace("]",""));
+    }
+
+    Set<Studierichting> behaaldeDiplomas = new HashSet<>();
+    // Studierichting huidigeStudie = studierichtingService.findByNaamAndNiveauNaam(naam, niveau);
+    if (request.getBehaaldeDiplomas() != null) {
+      for (String diploma : request.getBehaaldeDiplomas()) {
+        Map<String, String> parseErrors = new HashMap<>();
+        if (diploma.isBlank()) {
+          break;
+        }
+        parseStudierichting(diploma, parseErrors);
+        if (parseErrors.containsKey("naam") && parseErrors.containsKey("niveau")) {
+          String diplomaNaam = parseErrors.get("naam");
+          String diplomaNiveau = parseErrors.get("niveau");
+          Studierichting behaaldeStudie;
+          try {
+            behaaldeStudie = studierichtingService.findByNaamAndNiveauNaam(diplomaNaam, diplomaNiveau);
+          } catch (ServiceException e) {
+            errors.put("errorDiplomaParser", "Kies enkel richtingen uit de lijst!");
+            behaaldeStudie = null;
+          }
+          if (behaaldeStudie != null) {
+            behaaldeDiplomas.add(behaaldeStudie);
+          }
+        } else {
+          errors.put("errorDiplomaParser", "Kies enkel richtingen uit de lijst!");
+          // throw new ServiceException(errors);
+        }
+      }
+    }
+
     if (!errors.isEmpty()) {
-      throw new ServiceException(errors);
+        errors.remove("naam");
+        errors.remove("niveau");
+        if (!errors.isEmpty()) {
+          throw new ServiceException(errors);
+        }
     }
 
     Gebruiker gebruiker = GebruikerBuilder
       .gebruikerBuilder()
-      .setVoornaam(request.getVoornaam())
-      .setAchternaam(request.getAchternaam())
-      .setGebruikersnaam(request.getGebruikersnaam())
-      .setEmail(request.getEmail().toLowerCase())
-      .setGeslacht(request.getGeslacht())
-      .setLeeftijd(request.getLeeftijd())
-      .setWoonplaats(request.getWoonplaats())
-      .setWachtwoord(passwordEncoder.encode(request.getWachtwoord()))
-      .setRol(request.getRol())
-      .setStatus(Status.ONLINE)
+            .setVoornaam(request.getVoornaam())
+            .setAchternaam(request.getAchternaam())
+            .setGebruikersnaam(request.getGebruikersnaam())
+            .setEmail(request.getEmail().toLowerCase())
+            .setGeslacht(request.getGeslacht())
+            .setLeeftijd(request.getLeeftijd())
+            .setWoonplaats(request.getWoonplaats())
+            .setWachtwoord(passwordEncoder.encode(request.getWachtwoord()))
+            .setRol(request.getRol())
+            .setStatus(Status.ONLINE)
             .setXpAantal(0)
-      .build();
+            .setHuidigeStudie(huidigeStudie)
+            .setBehaaldeDiplomas(behaaldeDiplomas)
+            .build();
     repository.save(gebruiker);
     String jwtToken = jwtService.generateToken(gebruiker);
     return AuthenticationResponseBuilder
@@ -134,4 +196,19 @@ public class AuthenticationService {
       .setToken(jwtToken)
       .build();
   }
+
+  private void parseStudierichting(String input, Map<String, String> errors) {
+    int index = input.lastIndexOf('(');
+    if (index == -1 || !input.endsWith(")")) {
+      errors.put("errorRichtingParser", "Kies een richting uit de lijst!");
+      return;
+    }
+
+    String naam = input.substring(0, index).trim();
+    String niveau = input.substring(index + 1, input.length() - 1).trim();
+
+    errors.put("naam", naam);
+    errors.put("niveau", niveau);
+  }
+
 }
