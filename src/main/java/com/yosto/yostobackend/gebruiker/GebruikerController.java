@@ -66,6 +66,11 @@ public class GebruikerController {
     return ResponseEntity.ok(response);
   }
 
+  @GetMapping("/gebruiker/{id}")
+    public Gebruiker getGebruikerById(@PathVariable UUID id) {
+        return gebruikerService.getGebruikerById(id);
+    }
+
   @PutMapping("/{token}")
     public Gebruiker updateGebruiker(
         @PathVariable String token,

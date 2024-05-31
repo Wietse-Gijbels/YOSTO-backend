@@ -60,4 +60,8 @@ public class StudierichtingWaardesService {
                 .sorted((dto1, dto2) -> Double.compare(dto2.getSimilarityPercentage(), dto1.getSimilarityPercentage())) // Sort by similarity percentage in descending order
                 .collect(Collectors.toList());
     }
+
+    public StudierichtingWaardes findByStudierichtingId(UUID studierichtingId) {
+        return repository.findByStudierichtingId(studierichtingId);
+    }
 }
