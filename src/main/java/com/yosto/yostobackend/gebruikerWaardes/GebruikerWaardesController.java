@@ -1,5 +1,8 @@
 package com.yosto.yostobackend.gebruikerWaardes;
 
+import com.yosto.yostobackend.config.JwtService;
+import com.yosto.yostobackend.gebruiker.Gebruiker;
+import com.yosto.yostobackend.gebruiker.GebruikerService;
 import com.yosto.yostobackend.generic.ServiceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,13 +21,25 @@ public class GebruikerWaardesController {
 
     private final GebruikerWaardesService service;
 
-    public GebruikerWaardesController(GebruikerWaardesService service) {
+    private final GebruikerService gebruikerService;
+
+    private final JwtService jwtService;
+
+    public GebruikerWaardesController(GebruikerWaardesService service, GebruikerService gebruikerService, JwtService jwtService) {
         this.service = service;
+        this.gebruikerService = gebruikerService;
+        this.jwtService = jwtService;
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<GebruikerWaardes> getGebruikerWaardes(@PathVariable UUID id) {
         return new ResponseEntity<>(service.findByGebruikerId(id), HttpStatus.OK);
+    }
+
+    @PostMapping("/{token}/calculate")
+    public GebruikerWaardes calculateGebruikerWaardes(@PathVariable String token) {
+        Gebruiker gebruiker = gebruikerService.getGebruikerByEmail(jwtService.extractEmail(token));
+        return service.calculateGebruikerWaardes(gebruiker);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
