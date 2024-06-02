@@ -27,6 +27,11 @@ public class GebruikerWaardesController {
         return new ResponseEntity<>(service.findByGebruikerId(id), HttpStatus.OK);
     }
 
+    @PostMapping("/save")
+    public ResponseEntity<GebruikerWaardes> saveGebruikerWaardes(@RequestBody GebruikerWaardes gebruikerWaardes) {
+        return new ResponseEntity<>(service.save(gebruikerWaardes), HttpStatus.OK);
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(
             {
