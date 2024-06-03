@@ -75,6 +75,7 @@ public class GebruikerService {
                 .setGeslacht(gebruiker.geslacht())
                 .setWachtwoord(oudeGebruiker.getWachtwoord())
                 .setGebruikersnaam(oudeGebruiker.getGebruikersnaam())
+                        .setActieveRol(oudeGebruiker.getActieveRol())
                 .build());
     }
 
@@ -114,4 +115,26 @@ public class GebruikerService {
         return getGebruikerByEmail(email).getActieveRol();
     }
 
+    public Set<Rol> getRollen(String email) {
+        return getGebruikerByEmail(email).getRollen();
+    }
+
+    public Gebruiker updateRole(Rol rol, String email) {
+        Gebruiker gebruiker = getGebruikerByEmail(email);
+        repository.delete(gebruiker);
+        return repository.save(new GebruikerBuilder()
+                .setId(gebruiker.getId())
+                .setVoornaam(gebruiker.getVoornaam())
+                .setAchternaam(gebruiker.getAchternaam())
+                .setEmail(gebruiker.getEmail())
+                .setWoonplaats(gebruiker.getWoonplaats())
+                .setStatus(gebruiker.getStatus())
+                .setRol(gebruiker.getRollen())
+                .setLeeftijd(gebruiker.getLeeftijd())
+                .setGeslacht(gebruiker.getGeslacht())
+                .setWachtwoord(gebruiker.getWachtwoord())
+                .setGebruikersnaam(gebruiker.getGebruikersnaam())
+                .setActieveRol(rol)
+                .build());
+    }
 }

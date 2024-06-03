@@ -136,9 +136,10 @@ public class Gebruiker implements UserDetails {
     return geschenken;
   }
 
-    public Rol setActieveRol() {
-        return actieveRol;
-    }
+  public Rol getActieveRol() {
+    return actieveRol;
+  }
+
 
   public void addGeschenk(Geschenk geschenk, int xpAantalNew) {
     geschenken.add(geschenk);
@@ -182,9 +183,5 @@ public class Gebruiker implements UserDetails {
   @Override
   public boolean isEnabled() {
     return true;
-  }
-
-  public Rol getActieveRol() {
-    return actieveRol;
   }
 }

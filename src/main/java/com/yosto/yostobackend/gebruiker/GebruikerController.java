@@ -24,84 +24,96 @@ import org.springframework.web.server.ResponseStatusException;
 @RestController
 @RequestMapping("/api/v1/gebruiker")
 public class GebruikerController {
-  private final GebruikerService gebruikerService;
+    private final GebruikerService gebruikerService;
 
-  private final LookerQueueService lookerQueueService;
+    private final LookerQueueService lookerQueueService;
 
-  private final JwtService jwtService;
+    private final JwtService jwtService;
 
-  public GebruikerController(GebruikerService gebruikerService, LookerQueueService lookerQueueService, JwtService jwtService) {
-    this.gebruikerService = gebruikerService;
-    this.lookerQueueService = lookerQueueService;
-    this.jwtService = jwtService;
-  }
+    public GebruikerController(GebruikerService gebruikerService, LookerQueueService lookerQueueService, JwtService jwtService) {
+        this.gebruikerService = gebruikerService;
+        this.lookerQueueService = lookerQueueService;
+        this.jwtService = jwtService;
+    }
 
-  @GetMapping("/{token}")
-  public Gebruiker getGebruiker(@PathVariable String token) {
-    return gebruikerService.getGebruikerByEmail(jwtService.extractEmail(token));
-  }
+    @GetMapping("/{token}")
+    public Gebruiker getGebruiker(@PathVariable String token) {
+        return gebruikerService.getGebruikerByEmail(jwtService.extractEmail(token));
+    }
 
-  @MessageMapping("/gebruiker.disconnectGebruiker")
-  @SendTo("/gebruiker/public")
-  public Gebruiker disconnectGebruiker(@Payload Gebruiker gebruiker) {
-    gebruikerService.disconnect(gebruiker);
-    return gebruiker;
-  }
+    @MessageMapping("/gebruiker.disconnectGebruiker")
+    @SendTo("/gebruiker/public")
+    public Gebruiker disconnectGebruiker(@Payload Gebruiker gebruiker) {
+        gebruikerService.disconnect(gebruiker);
+        return gebruiker;
+    }
 
-  @GetMapping("/email/{token}")
-  public String getEmailFromToken(@PathVariable String token) {
-    return jwtService.extractEmail(token);
-  }
+    @GetMapping("/email/{token}")
+    public String getEmailFromToken(@PathVariable String token) {
+        return jwtService.extractEmail(token);
+    }
 
-  @GetMapping("/id/{token}")
-  public ResponseEntity<Map<String, String>> getIdFromToken(@PathVariable String token) {
-    Gebruiker gebruiker = gebruikerService.getGebruikerByEmail(jwtService.extractEmail(token));
-    Map<String, String> response = new HashMap<>();
-    response.put("id", gebruiker.getId().toString());
-    return ResponseEntity.ok(response);
-  }
+    @GetMapping("/id/{token}")
+    public ResponseEntity<Map<String, String>> getIdFromToken(@PathVariable String token) {
+        Gebruiker gebruiker = gebruikerService.getGebruikerByEmail(jwtService.extractEmail(token));
+        Map<String, String> response = new HashMap<>();
+        response.put("id", gebruiker.getId().toString());
+        return ResponseEntity.ok(response);
+    }
 
-  @PutMapping("/{token}")
+    @PutMapping("/{token}")
     public Gebruiker updateGebruiker(
-        @PathVariable String token,
-        @RequestBody UpdateGebruikerDTO gebruiker
+            @PathVariable String token,
+            @RequestBody UpdateGebruikerDTO gebruiker
     ) {
         return gebruikerService.updateGebruiker(
-        jwtService.extractEmail(token),
-        gebruiker
+                jwtService.extractEmail(token),
+                gebruiker
         );
     }
 
-  @GetMapping("/rol/{token}")
-  public Rol getRoleFromToken(@PathVariable String token) {
-    return gebruikerService.getRoleByEmail(jwtService.extractEmail(token));
-  }
+    @GetMapping("/rol/{token}")
+    public Rol getRoleFromToken(@PathVariable String token) {
+        return gebruikerService.getRoleByEmail(jwtService.extractEmail(token));
+    }
 
-  @ResponseStatus(HttpStatus.BAD_REQUEST)
-  @ExceptionHandler(
-    {
-      MethodArgumentNotValidException.class,
-      ServiceException.class,
-      ResponseStatusException.class
+    @GetMapping("/rollen")
+    public Set<Rol> getLookerQueue(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.substring(7);
+        return gebruikerService.getRollen(jwtService.extractEmail(token));
     }
-  )
-  public Map<String, String> handleValidationExceptions(Exception ex) {
-    Map<String, String> errors = new HashMap<>();
-    if (ex instanceof MethodArgumentNotValidException) {
-      ((MethodArgumentNotValidException) ex).getBindingResult()
-        .getAllErrors()
-        .forEach(
-          error -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put("error", fieldName + ": " + errorMessage);
-          }
-        );
-    } else if (ex instanceof ServiceException) {
-      errors.putAll(((ServiceException) ex).getErrors());
-    } else {
-      errors.put("error", ex.getMessage());
+
+    @PutMapping("/rol")
+    public Gebruiker updateRole(@RequestBody Rol updateRoleDTO, @RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.substring(7);
+        return gebruikerService.updateRole(updateRoleDTO, jwtService.extractEmail(token));
     }
-    return errors;
-  }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(
+            {
+                    MethodArgumentNotValidException.class,
+                    ServiceException.class,
+                    ResponseStatusException.class
+            }
+    )
+    public Map<String, String> handleValidationExceptions(Exception ex) {
+        Map<String, String> errors = new HashMap<>();
+        if (ex instanceof MethodArgumentNotValidException) {
+            ((MethodArgumentNotValidException) ex).getBindingResult()
+                    .getAllErrors()
+                    .forEach(
+                            error -> {
+                                String fieldName = ((FieldError) error).getField();
+                                String errorMessage = error.getDefaultMessage();
+                                errors.put("error", fieldName + ": " + errorMessage);
+                            }
+                    );
+        } else if (ex instanceof ServiceException) {
+            errors.putAll(((ServiceException) ex).getErrors());
+        } else {
+            errors.put("error", ex.getMessage());
+        }
+        return errors;
+    }
 }

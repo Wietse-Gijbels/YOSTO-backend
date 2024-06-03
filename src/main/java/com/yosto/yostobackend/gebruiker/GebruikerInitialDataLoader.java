@@ -40,7 +40,7 @@ public class GebruikerInitialDataLoader {
                         .setGeslacht("helper")
                         .setLeeftijd(25)
                         .setWoonplaats("helper")
-                        .setRol(Set.of(Rol.STUDYHELPER))
+                        .setRol(Set.of(Rol.STUDYHELPER,Rol.STUDYLOOKER))
                         .setStatus(Status.ONLINE)
                         .setXpAantal(300)
                         .setActieveRol(Rol.STUDYHELPER)
