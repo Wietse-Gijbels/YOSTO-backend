@@ -1,5 +1,6 @@
 package com.yosto.yostobackend.studierichtingWaardes;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.yosto.yostobackend.studierichting.Studierichting;
 import jakarta.persistence.*;
 
@@ -15,6 +16,7 @@ public class StudierichtingWaardes {
 
     @ManyToOne
     @JoinColumn(name = "studierichting_id", nullable = false)
+    @JsonBackReference
     private Studierichting studierichting;
 
     @Column(nullable = false)

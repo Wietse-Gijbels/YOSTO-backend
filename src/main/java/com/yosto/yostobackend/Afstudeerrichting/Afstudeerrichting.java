@@ -17,12 +17,10 @@ public class Afstudeerrichting {
     @GeneratedValue
     private UUID id;
 
-
     private String naam;
 
     @Column(length = 10000)
     private String beschrijving;
-
 
     @ManyToOne
     @JoinColumn(name = "studierichting_id")

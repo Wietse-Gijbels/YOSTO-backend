@@ -51,14 +51,26 @@ public class Gebruiker implements UserDetails {
     @JsonManagedReference(value = "gebruiker-geschenken")
     private List<Geschenk> geschenken = new ArrayList<>();
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @Enumerated(EnumType.STRING)
-    @CollectionTable(
-            name = "gebruiker_roles",
-            joinColumns = @JoinColumn(name = "gebruiker_id")
-    )
-    @Column(name = "rol")
-    private Set<Rol> rollen;
+  @ManyToOne
+  @JoinColumn(name = "huidige_studierichting_id")
+  private Studierichting huidigeStudie;
+
+  @ManyToMany
+  @JoinTable(
+          name = "gebruiker_behaalde_diplomas",
+          joinColumns = @JoinColumn(name = "gebruiker_id"),
+          inverseJoinColumns = @JoinColumn(name = "studierichting_id")
+  )
+  private Set<Studierichting> behaaldeDiplomas = new HashSet<>();
+
+  @ElementCollection(fetch = FetchType.EAGER)
+  @Enumerated(EnumType.STRING)
+  @CollectionTable(
+    name = "gebruiker_roles",
+    joinColumns = @JoinColumn(name = "gebruiker_id")
+  )
+  @Column(name = "rol")
+  private Set<Rol> rollen;
 
     public void disconnect() {
         this.status = Status.OFFLINE;
@@ -71,19 +83,21 @@ public class Gebruiker implements UserDetails {
     public Gebruiker() {
     }
 
-    public Gebruiker(GebruikerBuilder builder) {
-        this.voornaam = builder.voornaam;
-        this.achternaam = builder.achternaam;
-        this.gebruikersnaam = builder.gebruikersnaam;
-        this.email = builder.email;
-        this.wachtwoord = builder.wachtwoord;
-        this.geslacht = builder.geslacht;
-        this.leeftijd = builder.leeftijd;
-        this.woonplaats = builder.woonplaats;
-        this.rollen = Collections.singleton(builder.rol);
-        this.status = builder.status;
-        this.xpAantal = builder.xpAantal;
-    }
+  public Gebruiker(GebruikerBuilder builder) {
+    this.voornaam = builder.voornaam;
+    this.achternaam = builder.achternaam;
+    this.gebruikersnaam = builder.gebruikersnaam;
+    this.email = builder.email;
+    this.wachtwoord = builder.wachtwoord;
+    this.geslacht = builder.geslacht;
+    this.leeftijd = builder.leeftijd;
+    this.woonplaats = builder.woonplaats;
+    this.rollen = Collections.singleton(builder.rol);
+    this.status = builder.status;
+    this.xpAantal = builder.xpAantal;
+    this.huidigeStudie = builder.huidigeStudie;
+    this.behaaldeDiplomas = builder.behaaldeDiplomas;
+  }
 
     public UUID getId() {
         return id;
@@ -140,12 +154,20 @@ public class Gebruiker implements UserDetails {
     public List<Studierichting> getFavorieteStudierichtingen() {
         return favorieteStudierichtingen;
     }
+  public Studierichting getHuidigeStudie() {
 
-    public void addGeschenk(Geschenk geschenk, int xpAantalNew) {
-        geschenken.add(geschenk);
-        geschenk.updateGebruiker(this);
-        this.xpAantal = xpAantalNew;
-    }
+    return huidigeStudie;
+  }
+
+  public Set<Studierichting> getBehaaldeDiplomas() {
+    return behaaldeDiplomas;
+  }
+
+  public void addGeschenk(Geschenk geschenk, int xpAantalNew) {
+    geschenken.add(geschenk);
+    geschenk.updateGebruiker(this);
+    this.xpAantal = xpAantalNew;
+  }
 
     public void addFavorieteStudierichting(Studierichting studierichting) {
         favorieteStudierichtingen.add(studierichting);

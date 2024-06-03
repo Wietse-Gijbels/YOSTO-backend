@@ -90,7 +90,12 @@ public class GebruikerController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/{token}")
+  @GetMapping("/gebruiker/{id}")
+    public Gebruiker getGebruikerById(@PathVariable UUID id) {
+        return gebruikerService.getGebruikerById(id);
+    }
+
+  @PutMapping("/{token}")
     public Gebruiker updateGebruiker(
             @PathVariable String token,
             @RequestBody UpdateGebruikerDTO gebruiker
