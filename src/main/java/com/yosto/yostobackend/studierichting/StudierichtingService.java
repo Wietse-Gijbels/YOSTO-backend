@@ -19,7 +19,7 @@ public class StudierichtingService {
         return studierichtingRepository.findAll(PageRequest.of(page, size));
     }
 
-    public Studierichting findStudierichting(UUID id) {
+    public Studierichting findStudierichtingById(UUID id) {
         return studierichtingRepository.findById(id);
     }
 }
