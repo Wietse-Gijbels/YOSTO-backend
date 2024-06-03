@@ -22,7 +22,7 @@ public class GeschenkCategorie {
     @Column(length = 1000)
     private String beschrijving;
 
-    private String fotoUrl;  // Nieuw veld toegevoegd
+    private String fotoUrl;
 
     @OneToMany(mappedBy = "geschenkCategorie", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference(value = "categorie-geschenken")
