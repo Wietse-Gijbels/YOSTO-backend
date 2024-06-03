@@ -1,15 +1,13 @@
 package com.yosto.yostobackend.lookerQueue;
 
-import com.yosto.yostobackend.gebruiker.Gebruiker;
-
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class LookerQueueBuilder {
 
     UUID lookerId;
-
     LocalDateTime timestamp;
+    UUID studierichtingId;
 
     public LookerQueueBuilder() {
     }
@@ -28,8 +26,12 @@ public class LookerQueueBuilder {
         return this;
     }
 
+    public LookerQueueBuilder studierichtingId(UUID studierichtingId) {
+        this.studierichtingId = studierichtingId;
+        return this;
+    }
+
     public LookerQueue build() {
         return new LookerQueue(this);
     }
-
 }

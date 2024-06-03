@@ -2,11 +2,9 @@ package com.yosto.yostobackend.gebruiker;
 
 import com.yosto.yostobackend.config.JwtService;
 import com.yosto.yostobackend.generic.ServiceException;
-
-import java.util.*;
-
-import com.yosto.yostobackend.lookerQueue.LookerQueue;
 import com.yosto.yostobackend.lookerQueue.LookerQueueService;
+import com.yosto.yostobackend.studierichting.Studierichting;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -15,11 +13,10 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.io.IOException;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/v1/gebruiker")
@@ -48,9 +45,38 @@ public class GebruikerController {
         return gebruiker;
     }
 
+    @GetMapping("/online")
+    public List<Gebruiker> getConnectedGebruikers() {
+        return gebruikerService.findConnectedGebruikers();
+    }
+
     @GetMapping("/email/{token}")
     public String getEmailFromToken(@PathVariable String token) {
         return jwtService.extractEmail(token);
+    }
+
+    @PostMapping("/addFavorieteStudierichting/{studierichtingId}")
+    public ResponseEntity<Void> addFavorieteStudierichtingToGebruiker(@RequestHeader("Authorization") String authorizationHeader, @PathVariable UUID studierichtingId) throws IOException {
+        String token = extractToken(authorizationHeader);
+        Gebruiker gebruiker = gebruikerService.getGebruikerByEmail(jwtService.extractEmail(token));
+        gebruikerService.addFavorieteStudierichting(gebruiker, studierichtingId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @PostMapping("/removeFavorieteStudierichting/{studierichtingId}")
+    public ResponseEntity<Void> removeFavorieteStudierichtingToGebruiker(@RequestHeader("Authorization") String authorizationHeader, @PathVariable UUID studierichtingId) throws IOException {
+        String token = extractToken(authorizationHeader);
+        Gebruiker gebruiker = gebruikerService.getGebruikerByEmail(jwtService.extractEmail(token));
+        gebruikerService.removeFavorieteStudierichting(gebruiker, studierichtingId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @GetMapping("favorietenStudierichtingen/{page}")
+    public Page<Studierichting> findAllFavorieteStudierichtingen(@RequestHeader("Authorization") String authorizationHeader, @PathVariable int page, @RequestParam(defaultValue = "10") int size) throws IOException {
+        String token = extractToken(authorizationHeader);
+        Gebruiker gebruiker = gebruikerService.getGebruikerByEmail(jwtService.extractEmail(token));
+        return gebruikerService.findAllFavorieteStudierichtingen(gebruiker, page, 10);
+
     }
 
     @GetMapping("/id/{token}")
@@ -61,7 +87,12 @@ public class GebruikerController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/{token}")
+  @GetMapping("/gebruiker/{id}")
+    public Gebruiker getGebruikerById(@PathVariable UUID id) {
+        return gebruikerService.getGebruikerById(id);
+    }
+
+  @PutMapping("/{token}")
     public Gebruiker updateGebruiker(
             @PathVariable String token,
             @RequestBody UpdateGebruikerDTO gebruiker
@@ -87,6 +118,13 @@ public class GebruikerController {
     public Gebruiker updateRole(@RequestBody Rol updateRoleDTO, @RequestHeader("Authorization") String authHeader) {
         String token = authHeader.substring(7);
         return gebruikerService.updateRole(updateRoleDTO, jwtService.extractEmail(token));
+    }
+
+    private String extractToken(String authorizationHeader) {
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            return authorizationHeader.substring(7); // Remove "Bearer " prefix
+        }
+        throw new IllegalArgumentException("Invalid Authorization header.");
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

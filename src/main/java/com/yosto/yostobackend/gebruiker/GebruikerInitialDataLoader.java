@@ -67,7 +67,6 @@ public class GebruikerInitialDataLoader {
                         .build();
 
                 gebruikerRepository.save(gebruiker2);
-                lookerQueueService.addLookerToQueue(gebruiker2.getId());
             }
 
             String categorieNaam = "Filmticket";

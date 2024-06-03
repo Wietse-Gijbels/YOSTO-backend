@@ -2,7 +2,7 @@ package com.yosto.yostobackend.studierichting;
 
 import com.yosto.yostobackend.Afstudeerrichting.Afstudeerrichting;
 
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
 public class StudierichtingBuilder {
@@ -16,7 +16,7 @@ public class StudierichtingBuilder {
 
     String afstudeerrichting;
 
-    Set<Afstudeerrichting> afstudeerrichtingen;
+    List<Afstudeerrichting> afstudeerrichtingen;
 
     String beschrijving;
 
@@ -54,7 +54,7 @@ public class StudierichtingBuilder {
         return this;
     }
 
-    public StudierichtingBuilder setAfstudeerrichtingen(Set<Afstudeerrichting> afstudeerrichtingen) {
+    public StudierichtingBuilder setAfstudeerrichtingen(List<Afstudeerrichting> afstudeerrichtingen) {
         this.afstudeerrichting = afstudeerrichting;
         return this;
     }

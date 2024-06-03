@@ -1,29 +1,25 @@
 package com.yosto.yostobackend.auth;
 
 import com.yosto.yostobackend.gebruiker.Rol;
+import java.util.List;
 
 import java.util.Set;
 
 public class RegisterRequest {
   private String voornaam;
-
   private String achternaam;
-
   private String gebruikersnaam;
-
   private String email;
-
   private String wachtwoord;
-
   private String geslacht;
-
   private int leeftijd;
-
   private String woonplaats;
 
   private Set<Rol> rol;
 
   private Rol actieveRol;
+  private String huidigeStudieAndNiveau;
+  private List<String> behaaldeDiplomas;
 
   public RegisterRequest() {}
 
@@ -37,7 +33,9 @@ public class RegisterRequest {
     int leeftijd,
     String woonplaats,
     Set<Rol> rol,
-    Rol actieveRol
+    Rol actieveRol,
+    String huidigeStudieAndNiveau,
+    List<String> behaaldeDiplomas
   ) {
     this.voornaam = voornaam;
     this.achternaam = achternaam;
@@ -49,6 +47,8 @@ public class RegisterRequest {
     this.woonplaats = woonplaats;
     this.rol = rol;
     this.actieveRol = actieveRol;
+    this.huidigeStudieAndNiveau = huidigeStudieAndNiveau;
+    this.behaaldeDiplomas = behaaldeDiplomas;
   }
 
   public String getVoornaam() {
@@ -67,12 +67,12 @@ public class RegisterRequest {
     return wachtwoord;
   }
 
-  public String getGebruikersnaam() {
-    return gebruikersnaam;
-  }
-
   public String getGeslacht() {
     return geslacht;
+  }
+
+  public String getGebruikersnaam() {
+    return gebruikersnaam;
   }
 
   public int getLeeftijd() {
@@ -90,4 +90,12 @@ public class RegisterRequest {
   public Rol getActieveRol() {
         return actieveRol;
     }
+
+  public String getHuidigeStudieAndNiveau() {
+    return huidigeStudieAndNiveau;
+  }
+
+  public List<String> getBehaaldeDiplomas() {
+    return behaaldeDiplomas;
+  }
 }

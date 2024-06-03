@@ -3,16 +3,19 @@ package com.yosto.yostobackend.gebruiker;
 import com.yosto.yostobackend.auth.AuthenticationService;
 import com.yosto.yostobackend.email.MailService;
 import com.yosto.yostobackend.generic.ServiceException;
+import com.yosto.yostobackend.geschenk.Geschenk;
+import com.yosto.yostobackend.geschenkcategorie.GeschenkCategorie;
+import com.yosto.yostobackend.geschenkcategorie.GeschenkCategorieRepository;
+import com.yosto.yostobackend.studierichting.Studierichting;
+import com.yosto.yostobackend.studierichting.StudierichtingService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.UUID;
-
-import com.yosto.yostobackend.geschenk.Geschenk;
-import com.yosto.yostobackend.geschenk.GeschenkRepository;
-import com.yosto.yostobackend.geschenkcategorie.GeschenkCategorie;
-import com.yosto.yostobackend.geschenkcategorie.GeschenkCategorieRepository;
-import org.springframework.stereotype.Service;
 
 @Service
 public class GebruikerService {
@@ -20,12 +23,16 @@ public class GebruikerService {
     private final AuthenticationService authenticationService;
     private final GeschenkCategorieRepository geschenkCategorieRepository;
     private final MailService emailSenderService;
+    private final StudierichtingService studierichtingService;
+    private final GebruikerRepository gebruikerRepository;
 
-    public GebruikerService(GebruikerRepository repository, AuthenticationService authenticationService, GeschenkCategorieRepository geschenkCategorieRepository, MailService emailSenderService) {
+    public GebruikerService(GebruikerRepository repository, AuthenticationService authenticationService, GeschenkCategorieRepository geschenkCategorieRepository, MailService emailSenderService, StudierichtingService studierichtingService, GebruikerRepository gebruikerRepository) {
         this.repository = repository;
         this.authenticationService = authenticationService;
         this.geschenkCategorieRepository = geschenkCategorieRepository;
         this.emailSenderService = emailSenderService;
+        this.studierichtingService = studierichtingService;
+        this.gebruikerRepository = gebruikerRepository;
     }
 
     public void disconnect(Gebruiker gebruiker) {
@@ -136,5 +143,28 @@ public class GebruikerService {
                 .setGebruikersnaam(gebruiker.getGebruikersnaam())
                 .setActieveRol(rol)
                 .build());
+    }
+    public void addFavorieteStudierichting(Gebruiker gebruiker, UUID studierichtingId) {
+        Studierichting studierichting = studierichtingService.findStudierichtingById(studierichtingId);
+        gebruiker.addFavorieteStudierichting(studierichting);
+        repository.save(gebruiker);
+    }
+
+    public void removeFavorieteStudierichting(Gebruiker gebruiker, UUID studierichtingId) {
+        Studierichting studierichting = studierichtingService.findStudierichtingById(studierichtingId);
+        gebruiker.removeFavorieteStudierichting(studierichting);
+        repository.save(gebruiker);
+    }
+
+    public Page<Studierichting> findAllFavorieteStudierichtingen(Gebruiker gebruiker, int page, int size) {
+        List<Studierichting> favorieteStudierichtingen = gebruiker.getFavorieteStudierichtingen();
+
+        Pageable pageable = PageRequest.of(page, size);
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), favorieteStudierichtingen.size());
+
+        List<Studierichting> pagedStudierichtingen = favorieteStudierichtingen.subList(start, end);
+
+        return new PageImpl<>(pagedStudierichtingen, pageable, favorieteStudierichtingen.size());
     }
 }
