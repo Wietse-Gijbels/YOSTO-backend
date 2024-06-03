@@ -17,12 +17,16 @@ public class Vraag {
     @Column(nullable = false)
     private String parameter;
 
+    @Column(nullable = false)
+    private String fotourl;
+
     public Vraag() {
     }
 
-    public Vraag(String vraagTekst, String parameter) {
+    public Vraag(String vraagTekst, String parameter, String fotoUrl) {
         this.vraagTekst = vraagTekst;
         this.parameter = parameter;
+        this.fotourl = fotoUrl;
     }
 
     public UUID getId() {
@@ -35,5 +39,9 @@ public class Vraag {
 
     public String getParameter() {
         return parameter;
+    }
+
+    public String getFotoUrl() {
+        return fotourl;
     }
 }

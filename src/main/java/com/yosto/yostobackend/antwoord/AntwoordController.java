@@ -42,6 +42,12 @@ public class AntwoordController {
         return antwoordService.getAntwoordenByGebruiker(gebruiker);
     }
 
+    @GetMapping("/aantal/{token}")
+    public int getAmountOfAntwoordenByGebruiker(@PathVariable String token) {
+        Gebruiker gebruiker = gebruikerService.getGebruikerByEmail(jwtService.extractEmail(token));
+        return antwoordService.getAmountOfAntwoorden(gebruiker);
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(
             {

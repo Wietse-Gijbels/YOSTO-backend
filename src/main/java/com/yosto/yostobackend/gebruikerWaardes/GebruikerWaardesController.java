@@ -36,6 +36,12 @@ public class GebruikerWaardesController {
         return new ResponseEntity<>(service.findByGebruikerId(id), HttpStatus.OK);
     }
 
+    @GetMapping("/token/{token}")
+    public GebruikerWaardes getGebruikerWaardesByToken(@PathVariable String token) {
+        Gebruiker gebruiker = gebruikerService.getGebruikerByEmail(jwtService.extractEmail(token));
+        return service.findByGebruikerId(gebruiker.getId());
+    }
+
     @PostMapping("/{token}/calculate")
     public GebruikerWaardes calculateGebruikerWaardes(@PathVariable String token) {
         Gebruiker gebruiker = gebruikerService.getGebruikerByEmail(jwtService.extractEmail(token));
