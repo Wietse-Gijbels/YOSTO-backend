@@ -72,9 +72,12 @@ public class Gebruiker implements UserDetails {
   @Column(name = "rol")
   private Set<Rol> rollen;
 
-    public void disconnect() {
-        this.status = Status.OFFLINE;
-    }
+  @Column(name = "actieve_rol")
+  private Rol actieveRol;
+
+  public void disconnect() {
+    this.status = Status.OFFLINE;
+  }
 
     public void connect() {
         this.status = Status.ONLINE;
@@ -92,9 +95,10 @@ public class Gebruiker implements UserDetails {
     this.geslacht = builder.geslacht;
     this.leeftijd = builder.leeftijd;
     this.woonplaats = builder.woonplaats;
-    this.rollen = Collections.singleton(builder.rol);
+    this.rollen = builder.rol;
     this.status = builder.status;
     this.xpAantal = builder.xpAantal;
+    this.actieveRol = builder.actieveRol;
     this.huidigeStudie = builder.huidigeStudie;
     this.behaaldeDiplomas = builder.behaaldeDiplomas;
   }
@@ -162,6 +166,11 @@ public class Gebruiker implements UserDetails {
   public Set<Studierichting> getBehaaldeDiplomas() {
     return behaaldeDiplomas;
   }
+
+  public Rol getActieveRol() {
+    return actieveRol;
+  }
+
 
   public void addGeschenk(Geschenk geschenk, int xpAantalNew) {
     geschenken.add(geschenk);

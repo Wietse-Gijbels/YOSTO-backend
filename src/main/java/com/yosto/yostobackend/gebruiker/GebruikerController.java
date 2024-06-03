@@ -16,10 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/v1/gebruiker")
@@ -104,6 +101,23 @@ public class GebruikerController {
                 jwtService.extractEmail(token),
                 gebruiker
         );
+    }
+
+    @GetMapping("/rol/{token}")
+    public Rol getRoleFromToken(@PathVariable String token) {
+        return gebruikerService.getRoleByEmail(jwtService.extractEmail(token));
+    }
+
+    @GetMapping("/rollen")
+    public Set<Rol> getLookerQueue(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.substring(7);
+        return gebruikerService.getRollen(jwtService.extractEmail(token));
+    }
+
+    @PutMapping("/rol")
+    public Gebruiker updateRole(@RequestBody Rol updateRoleDTO, @RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.substring(7);
+        return gebruikerService.updateRole(updateRoleDTO, jwtService.extractEmail(token));
     }
 
     private String extractToken(String authorizationHeader) {

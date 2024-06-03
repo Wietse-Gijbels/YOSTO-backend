@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.Set;
 import java.util.UUID;
 
 @Configuration
@@ -39,9 +40,10 @@ public class GebruikerInitialDataLoader {
                         .setGeslacht("helper")
                         .setLeeftijd(25)
                         .setWoonplaats("helper")
-                        .setRol(Rol.STUDYHELPER)
+                        .setRol(Set.of(Rol.STUDYHELPER,Rol.STUDYLOOKER))
                         .setStatus(Status.ONLINE)
                         .setXpAantal(300)
+                        .setActieveRol(Rol.STUDYHELPER)
                         .build();
 
                 gebruikerRepository.save(gebruiker1);
@@ -59,8 +61,9 @@ public class GebruikerInitialDataLoader {
                         .setGeslacht("looker")
                         .setLeeftijd(25)
                         .setWoonplaats("looker")
-                        .setRol(Rol.STUDYLOOKER)
+                        .setRol(Set.of(Rol.STUDYLOOKER))
                         .setStatus(Status.ONLINE)
+                        .setActieveRol(Rol.STUDYLOOKER)
                         .build();
 
                 gebruikerRepository.save(gebruiker2);

@@ -1,5 +1,6 @@
 package com.yosto.yostobackend.gebruiker;
 
+import java.util.Set;
 import com.yosto.yostobackend.studierichting.Studierichting;
 
 import java.util.Set;
@@ -28,7 +29,9 @@ public final class GebruikerBuilder {
 
     int xpAantal;
 
-    Rol rol;
+  Set<Rol> rol;
+
+  Rol actieveRol;
 
   Studierichting huidigeStudie;
 
@@ -85,6 +88,10 @@ public final class GebruikerBuilder {
         return this;
     }
 
+  public GebruikerBuilder setRol(Set<Rol> rol) {
+    this.rol = rol;
+    return this;
+  }
     public GebruikerBuilder setRol(Rol rol) {
         this.rol = rol;
         return this;
@@ -97,6 +104,11 @@ public final class GebruikerBuilder {
 
   public GebruikerBuilder setXpAantal(int xpAantal) {
     this.xpAantal = xpAantal;
+    return this;
+  }
+
+  public GebruikerBuilder setActieveRol(Rol actieveRol) {
+    this.actieveRol = actieveRol;
     return this;
   }
 

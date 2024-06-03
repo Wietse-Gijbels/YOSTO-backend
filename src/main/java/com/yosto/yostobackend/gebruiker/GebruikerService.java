@@ -41,10 +41,6 @@ public class GebruikerService {
         repository.save(gebruiker);
     }
 
-    public List<Gebruiker> findConnectedGebruikers() {
-        return repository.findAllByStatus(Status.ONLINE);
-    }
-
     public Gebruiker getGebruikerByEmail(String email) {
         Map<String, String> errors = new HashMap<>();
 
@@ -81,11 +77,12 @@ public class GebruikerService {
                 .setEmail(oudeGebruiker.getEmail())
                 .setWoonplaats(gebruiker.woonplaats())
                 .setStatus(oudeGebruiker.getStatus())
-                .setRol(oudeGebruiker.getRollen().stream().toList().get(0))
+                .setRol(oudeGebruiker.getRollen())
                 .setLeeftijd(gebruiker.leeftijd())
                 .setGeslacht(gebruiker.geslacht())
                 .setWachtwoord(oudeGebruiker.getWachtwoord())
                 .setGebruikersnaam(oudeGebruiker.getGebruikersnaam())
+                        .setActieveRol(oudeGebruiker.getActieveRol())
                 .build());
     }
 
@@ -121,6 +118,32 @@ public class GebruikerService {
         }
     }
 
+    public Rol getRoleByEmail(String email) {
+        return getGebruikerByEmail(email).getActieveRol();
+    }
+
+    public Set<Rol> getRollen(String email) {
+        return getGebruikerByEmail(email).getRollen();
+    }
+
+    public Gebruiker updateRole(Rol rol, String email) {
+        Gebruiker gebruiker = getGebruikerByEmail(email);
+        repository.delete(gebruiker);
+        return repository.save(new GebruikerBuilder()
+                .setId(gebruiker.getId())
+                .setVoornaam(gebruiker.getVoornaam())
+                .setAchternaam(gebruiker.getAchternaam())
+                .setEmail(gebruiker.getEmail())
+                .setWoonplaats(gebruiker.getWoonplaats())
+                .setStatus(gebruiker.getStatus())
+                .setRol(gebruiker.getRollen())
+                .setLeeftijd(gebruiker.getLeeftijd())
+                .setGeslacht(gebruiker.getGeslacht())
+                .setWachtwoord(gebruiker.getWachtwoord())
+                .setGebruikersnaam(gebruiker.getGebruikersnaam())
+                .setActieveRol(rol)
+                .build());
+    }
     public void addFavorieteStudierichting(Gebruiker gebruiker, UUID studierichtingId) {
         Studierichting studierichting = studierichtingService.findStudierichtingById(studierichtingId);
         gebruiker.addFavorieteStudierichting(studierichting);
