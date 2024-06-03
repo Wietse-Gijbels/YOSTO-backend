@@ -1,8 +1,8 @@
 package com.yosto.yostobackend.lookerQueue;
 
-import com.yosto.yostobackend.gebruiker.Gebruiker;
 import com.yosto.yostobackend.gebruiker.GebruikerService;
 import com.yosto.yostobackend.generic.ServiceException;
+import com.yosto.yostobackend.gebruiker.Gebruiker;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -20,7 +20,6 @@ import java.util.UUID;
 public class LookerQueueController {
 
     private final LookerQueueService lookerQueueService;
-
     private final GebruikerService gebruikerService;
 
     public LookerQueueController(LookerQueueService lookerQueueService, GebruikerService gebruikerService) {
@@ -29,10 +28,14 @@ public class LookerQueueController {
     }
 
     @PostMapping("/joinQueue")
-    public ResponseEntity<String> joinQueue(@RequestParam UUID lookerId) {
+    public ResponseEntity<Map<String, String>> joinQueue(@RequestParam UUID lookerId, @RequestParam UUID studierichtingId) {
         Gebruiker looker = gebruikerService.getGebruikerById(lookerId);
-        lookerQueueService.addLookerToQueue(lookerId);
-        return ResponseEntity.ok("Looker added to the queue");
+        lookerQueueService.addLookerToQueue(lookerId, studierichtingId);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Looker added to the queue");
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/getFirstLooker")
@@ -53,7 +56,6 @@ public class LookerQueueController {
         response.put("amount", lookerQueueService.getAmountOfLookersInQueue());
         return ResponseEntity.ok(response);
     }
-
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(

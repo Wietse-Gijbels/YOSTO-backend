@@ -1,8 +1,6 @@
 package com.yosto.yostobackend.lookerQueue;
 
-import com.yosto.yostobackend.gebruiker.Gebruiker;
 import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -14,11 +12,16 @@ public class LookerQueue {
     @GeneratedValue
     private UUID id;
 
-    @Column(nullable = false, unique = false)
+    @Column(nullable = false)
     private UUID lookerId;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private LocalDateTime timestamp;
+
+    @Column(nullable = false)
+    private UUID studierichtingId;
+
+    // Constructors, getters and setters
 
     public LookerQueue() {
     }
@@ -26,6 +29,7 @@ public class LookerQueue {
     public LookerQueue(LookerQueueBuilder builder) {
         this.lookerId = builder.lookerId;
         this.timestamp = builder.timestamp;
+        this.studierichtingId = builder.studierichtingId;
     }
 
     public UUID getId() {
@@ -38,5 +42,9 @@ public class LookerQueue {
 
     public LocalDateTime getTimestamp() {
         return timestamp;
+    }
+
+    public UUID getStudierichtingId() {
+        return studierichtingId;
     }
 }
