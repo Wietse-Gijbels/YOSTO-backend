@@ -20,8 +20,11 @@ import java.util.List;
 @RequestMapping("/api/v1/vragen")
 public class VraagController {
 
-    @Autowired
-    private VraagService vraagService;
+    private final VraagService vraagService;
+
+    public VraagController(VraagService vraagService) {
+        this.vraagService = vraagService;
+    }
 
     @GetMapping
     public List<Vraag> getAllVragen() {

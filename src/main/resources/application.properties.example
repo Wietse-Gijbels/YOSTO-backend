@@ -5,5 +5,7 @@ spring.datasource.password=postgres
 spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
 spring.jpa.hibernate.ddl-auto=create-drop
 file.upload-dir=src/main/resources/static/images
+file.upload-dir-vragen=src/main/resources/static/images/vragen
+
 
 sendgrid.api.key=
