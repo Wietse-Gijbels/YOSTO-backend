@@ -12,8 +12,11 @@ public class VraagService {
     @Value("${file.upload-dir-vragen}")
     private String fileUploadDir;
 
-    @Autowired
-    private VraagRepository vraagRepository;
+    private final VraagRepository vraagRepository;
+
+    public VraagService(VraagRepository vraagRepository) {
+        this.vraagRepository = vraagRepository;
+    }
 
     public List<Vraag> getAllVragen() {
         return vraagRepository.findAll();
