@@ -49,8 +49,8 @@ public class StudierichtingController {
     }
 
     @GetMapping("/{id}")
-    public Studierichting findStudierichting(@PathVariable() UUID id) {
-        return studierichtingService.findStudierichting(id);
+    public Studierichting findStudierichtingById(@PathVariable() UUID id) {
+        return studierichtingService.findStudierichtingById(id);
     }
 
     @GetMapping("/filter")

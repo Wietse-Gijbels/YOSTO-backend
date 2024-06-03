@@ -1,10 +1,12 @@
 package com.yosto.yostobackend.studierichting;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.yosto.yostobackend.Afstudeerrichting.Afstudeerrichting;
+import com.yosto.yostobackend.gebruiker.Gebruiker;
 import jakarta.persistence.*;
 
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -23,7 +25,11 @@ public class Studierichting {
 
     @OneToMany(mappedBy = "studierichting", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
-    private Set<Afstudeerrichting> afstudeerrichtingen;
+    private List<Afstudeerrichting> afstudeerrichtingen;
+
+    @ManyToMany(mappedBy = "favorieteStudierichtingen")
+    @JsonBackReference
+    private List<Gebruiker> favorieteGebruikers;
 
     public Studierichting() {
     }
@@ -51,7 +57,11 @@ public class Studierichting {
         return niveauNaam;
     }
 
-    public Set<Afstudeerrichting> getAfstudeerrichtingen() {
+    public List<Afstudeerrichting> getAfstudeerrichtingen() {
         return afstudeerrichtingen;
+    }
+
+    public List<Gebruiker> getFavorieteGebruikers() {
+        return favorieteGebruikers;
     }
 }
