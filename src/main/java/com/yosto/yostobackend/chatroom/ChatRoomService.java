@@ -1,6 +1,7 @@
 package com.yosto.yostobackend.chatroom;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import com.yosto.yostobackend.gebruiker.Gebruiker;
 import com.yosto.yostobackend.gebruiker.GebruikerService;
@@ -9,7 +10,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class ChatRoomService {
   private final ChatRoomRepository chatRoomRepository;
-
   private final GebruikerService gebruikerService;
 
   public ChatRoomService(ChatRoomRepository chatRoomRepository, GebruikerService gebruikerService) {
@@ -18,60 +18,59 @@ public class ChatRoomService {
   }
 
   public Optional<String> getChatRoomId(
-    UUID senderId,
-    UUID recipientId,
-    boolean createNewRoomIfNotExists
+          UUID senderId,
+          UUID recipientId,
+          UUID studierichtingId,
+          boolean createNewRoomIfNotExists
   ) {
     return chatRoomRepository
-      .findBySenderIdAndRecipientId(senderId, recipientId)
-      .map(ChatRoom::getChatId)
-      .or(
-        () -> {
-          if (createNewRoomIfNotExists) {
-            var chatId = createChatId(senderId, recipientId);
-            return Optional.of(chatId);
-          }
+            .findBySenderIdAndRecipientIdAndStudierichtingId(senderId, recipientId, studierichtingId)
+            .map(ChatRoom::getChatId)
+            .or(
+                    () -> {
+                      if (createNewRoomIfNotExists) {
+                        var chatId = createChatId(senderId, recipientId, studierichtingId);
+                        return Optional.of(chatId);
+                      }
 
-          return Optional.empty();
-        }
-      );
+                      return Optional.empty();
+                    }
+            );
   }
 
-  private String createChatId(UUID senderId, UUID recipientId) {
-    var chatId = String.format("%s_%s", senderId, recipientId);
+  private String createChatId(UUID senderId, UUID recipientId, UUID studierichtingId) {
+    var chatId = String.format("%s_%s_%s", senderId, recipientId, studierichtingId);
 
     ChatRoom senderRecipient = ChatRoomBuilder
-      .chatRoomBuilder()
-      .chatId(chatId)
-      .senderId(senderId)
-      .recipientId(recipientId)
-      .build();
+            .chatRoomBuilder()
+            .chatId(chatId)
+            .senderId(senderId)
+            .recipientId(recipientId)
+            .studierichtingId(studierichtingId)
+            .build();
 
     ChatRoom recipientSender = ChatRoomBuilder
-      .chatRoomBuilder()
-      .chatId(chatId)
-      .senderId(recipientId)
-      .recipientId(senderId)
-      .build();
+            .chatRoomBuilder()
+            .chatId(chatId)
+            .senderId(recipientId)
+            .recipientId(senderId)
+            .studierichtingId(studierichtingId)
+            .build();
 
     chatRoomRepository.save(senderRecipient);
     chatRoomRepository.save(recipientSender);
 
     return chatId;
   }
-  public List<Gebruiker> getMyChatRooms(UUID id) {
-    Set<Gebruiker> users = new HashSet<>();
 
+  public List<ChatRoom> getMyChatRooms(UUID id) {
     List<ChatRoom> chatRooms = chatRoomRepository.findAll();
+    Set<String> seenChatIds = new HashSet<>();
 
-    for (ChatRoom chatRoom : chatRooms) {
-      if (chatRoom.getSenderId().equals(id)) {
-        users.add(gebruikerService.getGebruikerById(chatRoom.getRecipientId()));
-      } else if (chatRoom.getRecipientId().equals(id)) {
-        users.add(gebruikerService.getGebruikerById(chatRoom.getSenderId()));
-      }
-    }
-
-    return new ArrayList<>(users);
+    return chatRooms.stream()
+            .filter(chatRoom -> (chatRoom.getSenderId().equals(id) || chatRoom.getRecipientId().equals(id))
+                    && !chatRoom.getSenderId().equals(chatRoom.getRecipientId())
+                    && seenChatIds.add(chatRoom.getChatId()))
+            .collect(Collectors.toList());
   }
 }

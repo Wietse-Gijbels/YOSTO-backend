@@ -9,6 +9,7 @@ public class ChatNotificationBuilder {
   UUID recipientId;
   String content;
   Date timestamp;
+  UUID studierichtingId;
 
   public ChatNotificationBuilder() {}
 
@@ -38,6 +39,11 @@ public class ChatNotificationBuilder {
 
   public ChatNotificationBuilder timestamp(Date timestamp) {
     this.timestamp = timestamp;
+    return this;
+  }
+
+  public ChatNotificationBuilder studierichtingId(UUID studierichtingId) {
+    this.studierichtingId = studierichtingId;
     return this;
   }
 

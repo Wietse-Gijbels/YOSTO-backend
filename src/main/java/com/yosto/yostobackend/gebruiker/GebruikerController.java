@@ -82,6 +82,12 @@ public class GebruikerController {
         );
     }
 
+  @PostMapping("/addXp/{id}/{xp}")
+    public ResponseEntity<Void> addXp(@PathVariable UUID id, @PathVariable int xp) {
+        gebruikerService.addXp(id, xp);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   @ExceptionHandler(
     {

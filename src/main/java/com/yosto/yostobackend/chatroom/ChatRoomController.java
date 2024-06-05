@@ -19,7 +19,7 @@ public class ChatRoomController {
     }
 
     @GetMapping("/getMyChatRooms/{id}")
-    public List<Gebruiker> getMyChatRooms(@PathVariable UUID id) {
+    public List<ChatRoom> getMyChatRooms(@PathVariable UUID id) {
         return chatRoomService.getMyChatRooms(id);
     }
 }

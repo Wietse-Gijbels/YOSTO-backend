@@ -5,5 +5,7 @@ import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ChatRoomRepository extends JpaRepository<ChatRoom, UUID> {
-  Optional<ChatRoom> findBySenderIdAndRecipientId(UUID senderId, UUID recipientId);
+  Optional<ChatRoom> findBySenderIdAndRecipientIdAndStudierichtingId(UUID senderId, UUID recipientId, UUID studierichtingId);
+
+  Optional<ChatRoom> findByChatId(String chatId);
 }

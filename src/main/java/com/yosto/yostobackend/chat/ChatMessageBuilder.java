@@ -7,6 +7,7 @@ public class ChatMessageBuilder {
   String chatRoomId;
   UUID senderId;
   UUID recipientId;
+  UUID studierichtingId;
   String content;
   Date timestamp;
 
@@ -28,6 +29,11 @@ public class ChatMessageBuilder {
 
   public ChatMessageBuilder recipientId(UUID recipientId) {
     this.recipientId = recipientId;
+    return this;
+  }
+
+  public ChatMessageBuilder studierichtingId(UUID studierichtingId) {
+    this.studierichtingId = studierichtingId;
     return this;
   }
 

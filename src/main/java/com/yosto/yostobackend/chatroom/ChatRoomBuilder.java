@@ -6,6 +6,7 @@ public class ChatRoomBuilder {
   String chatId;
   UUID senderId;
   UUID recipientId;
+  UUID studierichtingId;
 
   public ChatRoomBuilder() {}
 
@@ -25,6 +26,11 @@ public class ChatRoomBuilder {
 
   public ChatRoomBuilder recipientId(UUID recipientId) {
     this.recipientId = recipientId;
+    return this;
+  }
+
+  public ChatRoomBuilder studierichtingId(UUID studierichtingId) {
+    this.studierichtingId = studierichtingId;
     return this;
   }
 

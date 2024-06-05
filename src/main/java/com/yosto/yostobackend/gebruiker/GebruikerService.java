@@ -114,4 +114,31 @@ public class GebruikerService {
         }
     }
 
+    public void addXp(UUID id, int xp) {
+        Gebruiker gebruiker = repository.findById(id).orElseThrow(() -> new RuntimeException("Gebruiker niet gevonden"));
+
+        // Create a new Gebruiker with the updated XP value
+        Gebruiker updatedGebruiker = new GebruikerBuilder()
+                .setId(gebruiker.getId())
+                .setVoornaam(gebruiker.getVoornaam())
+                .setAchternaam(gebruiker.getAchternaam())
+                .setEmail(gebruiker.getEmail())
+                .setWoonplaats(gebruiker.getWoonplaats())
+                .setStatus(gebruiker.getStatus())
+                .setRol(gebruiker.getRollen().stream().toList().get(0)) // Assuming only one role
+                .setLeeftijd(gebruiker.getLeeftijd())
+                .setGeslacht(gebruiker.getGeslacht())
+                .setWachtwoord(gebruiker.getWachtwoord())
+                .setGebruikersnaam(gebruiker.getGebruikersnaam())
+                .setXpAantal(gebruiker.getXpAantal() + xp) // Add the XP
+                .setHuidigeStudie(gebruiker.getHuidigeStudie())
+                .setBehaaldeDiplomas(new HashSet<>(gebruiker.getBehaaldeDiplomas())) // Ensure a new collection instance
+                .build();
+
+        // Delete the old gebruiker
+        repository.delete(gebruiker);
+
+        // Save the updated gebruiker back to the repository
+        repository.save(updatedGebruiker);
+    }
 }
