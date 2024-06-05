@@ -32,20 +32,20 @@ public class AuthenticationService {
 
     private final AuthenticationManager authenticationManager;
 
-  private final StudierichtingService studierichtingService;
+    private final StudierichtingService studierichtingService;
 
-  public AuthenticationService(
-          GebruikerRepository repository,
-          PasswordEncoder passwordEncoder,
-          JwtService jwtService,
-          AuthenticationManager authenticationManager, StudierichtingService studierichtingService
-  ) {
-    this.repository = repository;
-    this.passwordEncoder = passwordEncoder;
-    this.jwtService = jwtService;
-    this.authenticationManager = authenticationManager;
-      this.studierichtingService = studierichtingService;
-  }
+    public AuthenticationService(
+            GebruikerRepository repository,
+            PasswordEncoder passwordEncoder,
+            JwtService jwtService,
+            AuthenticationManager authenticationManager, StudierichtingService studierichtingService
+    ) {
+        this.repository = repository;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
+        this.authenticationManager = authenticationManager;
+        this.studierichtingService = studierichtingService;
+    }
 
     public AuthenticationResponse registreer(RegisterRequest request) {
         Map<String, String> errors = new HashMap<>();
@@ -78,96 +78,91 @@ public class AuthenticationService {
         if (request.getWoonplaats() == null || request.getWoonplaats().isBlank()) {
             errors.put("errorProvincie", "Provincie is verplicht.");
         }
-        //        if (request.getRol() == null) {
-        //            errors.put("errorRol", "Rol is verplicht.");
-        //        }
-        //        if (request.getRol() == Rol.ADMIN) {
-        //            errors.put("errorAdmin", "U heeft geen rechten om een admin account aan te maken.");
-        //        }
 
-    parseStudierichting(request.getHuidigeStudieAndNiveau(), errors);
+        parseStudierichting(request.getHuidigeStudieAndNiveau(), errors);
 
-    // if (errors.containsKey("errorRichtingParser")) {
-    //  throw new ServiceException(errors);
-    // }
+        // if (errors.containsKey("errorRichtingParser")) {
+        //  throw new ServiceException(errors);
+        // }
 
-    String naam = errors.get("naam");
-    String niveau = errors.get("niveau");
-    if (naam == null || niveau == null) {
-      errors.put("errorRichtingParser", "Kies een richting uit de lijst!");
-      // throw new ServiceException(errors);
-    }
-
-    Studierichting huidigeStudie;
-
-    try {
-      huidigeStudie = studierichtingService.findByNaamAndNiveauNaam(naam, niveau);
-    } catch (ServiceException e) {
-      huidigeStudie = new Studierichting();
-      errors.put("errorRichtingParser", e.getMessage().replace("[", "").replace("]",""));
-    }
-
-    Set<Studierichting> behaaldeDiplomas = new HashSet<>();
-    // Studierichting huidigeStudie = studierichtingService.findByNaamAndNiveauNaam(naam, niveau);
-    if (request.getBehaaldeDiplomas() != null) {
-      for (String diploma : request.getBehaaldeDiplomas()) {
-        Map<String, String> parseErrors = new HashMap<>();
-        if (diploma.isBlank()) {
-          break;
+        String naam = errors.get("naam");
+        String niveau = errors.get("niveau");
+        if (naam == null || niveau == null) {
+            errors.put("errorRichtingParser", "Kies een richting uit de lijst!");
+            // throw new ServiceException(errors);
         }
-        parseStudierichting(diploma, parseErrors);
-        if (parseErrors.containsKey("naam") && parseErrors.containsKey("niveau")) {
-          String diplomaNaam = parseErrors.get("naam");
-          String diplomaNiveau = parseErrors.get("niveau");
-          Studierichting behaaldeStudie;
-          try {
-            behaaldeStudie = studierichtingService.findByNaamAndNiveauNaam(diplomaNaam, diplomaNiveau);
-          } catch (ServiceException e) {
-            errors.put("errorDiplomaParser", "Kies enkel richtingen uit de lijst!");
-            behaaldeStudie = null;
-          }
-          if (behaaldeStudie != null) {
-            behaaldeDiplomas.add(behaaldeStudie);
-          }
-        } else {
-          errors.put("errorDiplomaParser", "Kies enkel richtingen uit de lijst!");
-          // throw new ServiceException(errors);
-        }
-      }
-    }
 
-    if (!errors.isEmpty()) {
-        errors.remove("naam");
-        errors.remove("niveau");
+        Studierichting huidigeStudie;
+
+        try {
+            huidigeStudie = studierichtingService.findByNaamAndNiveauNaam(naam, niveau);
+        } catch (ServiceException e) {
+            huidigeStudie = new Studierichting();
+            errors.put("errorRichtingParser", e.getMessage().replace("[", "").replace("]", ""));
+        }
+
+        Set<Studierichting> behaaldeDiplomas = new HashSet<>();
+        // Studierichting huidigeStudie = studierichtingService.findByNaamAndNiveauNaam(naam, niveau);
+        if (request.getBehaaldeDiplomas() != null) {
+            for (String diploma : request.getBehaaldeDiplomas()) {
+                Map<String, String> parseErrors = new HashMap<>();
+                if (diploma.isBlank()) {
+                    break;
+                }
+                parseStudierichting(diploma, parseErrors);
+                if (parseErrors.containsKey("naam") && parseErrors.containsKey("niveau")) {
+                    String diplomaNaam = parseErrors.get("naam");
+                    String diplomaNiveau = parseErrors.get("niveau");
+                    Studierichting behaaldeStudie;
+                    try {
+                        behaaldeStudie = studierichtingService.findByNaamAndNiveauNaam(diplomaNaam, diplomaNiveau);
+                    } catch (ServiceException e) {
+                        errors.put("errorDiplomaParser", "Kies enkel richtingen uit de lijst!");
+                        behaaldeStudie = null;
+                    }
+                    if (behaaldeStudie != null) {
+                        behaaldeDiplomas.add(behaaldeStudie);
+                    }
+                } else {
+                    errors.put("errorDiplomaParser", "Kies enkel richtingen uit de lijst!");
+                    // throw new ServiceException(errors);
+                }
+            }
+        }
+
         if (!errors.isEmpty()) {
-          throw new ServiceException(errors);
+            errors.remove("naam");
+            errors.remove("niveau");
+            if (!errors.isEmpty()) {
+                throw new ServiceException(errors);
+            }
         }
-    }
 
-    Gebruiker gebruiker = GebruikerBuilder
-      .gebruikerBuilder()
-            .setVoornaam(request.getVoornaam())
-            .setAchternaam(request.getAchternaam())
-            .setGebruikersnaam(request.getGebruikersnaam())
-            .setEmail(request.getEmail().toLowerCase())
-            .setGeslacht(request.getGeslacht())
-            .setLeeftijd(request.getLeeftijd())
-            .setWoonplaats(request.getWoonplaats())
-            .setWachtwoord(passwordEncoder.encode(request.getWachtwoord()))
-            .setRol(request.getRol())
-            .setStatus(Status.ONLINE)
-            .setXpAantal(0)
-            .setHuidigeStudie(huidigeStudie)
-            .setBehaaldeDiplomas(behaaldeDiplomas)
-            .setActieveRol(request.getActieveRol())
-            .build();
-    repository.save(gebruiker);
-    String jwtToken = jwtService.generateToken(gebruiker);
-    return AuthenticationResponseBuilder
-      .authenticationResponseBuilder()
-      .setToken(jwtToken)
-      .build();
-  }
+        Gebruiker gebruiker = GebruikerBuilder
+                .gebruikerBuilder()
+                .setVoornaam(request.getVoornaam())
+                .setAchternaam(request.getAchternaam())
+                .setGebruikersnaam(request.getGebruikersnaam())
+                .setEmail(request.getEmail().toLowerCase())
+                .setGeslacht(request.getGeslacht())
+                .setLeeftijd(request.getLeeftijd())
+                .setWoonplaats(request.getWoonplaats())
+                .setWachtwoord(passwordEncoder.encode(request.getWachtwoord()))
+                .setRol(request.getRol())
+                .setStatus(Status.ONLINE)
+                .setXpAantal(0)
+                .setHuidigeStudie(huidigeStudie)
+                .setBehaaldeDiplomas(behaaldeDiplomas)
+                .setActieveRol(request.getActieveRol())
+                .build();
+        repository.save(gebruiker);
+        String jwtToken = jwtService.generateToken(gebruiker);
+        return AuthenticationResponseBuilder
+                .authenticationResponseBuilder()
+                .setToken(jwtToken)
+                .setRol(gebruiker.getActieveRol())
+                .build();
+    }
 
     public AuthenticationResponse login(AuthenticationRequest request) {
         Map<String, String> errors = new HashMap<>();
@@ -195,26 +190,27 @@ public class AuthenticationService {
             throw new ServiceException(errors);
         }
 
-    Gebruiker gebruiker = repository.findByEmail(request.getEmail()).orElseThrow();
-    String jwtToken = jwtService.generateToken(gebruiker);
-    return AuthenticationResponseBuilder
-      .authenticationResponseBuilder()
-      .setToken(jwtToken)
-      .build();
-  }
-
-  private void parseStudierichting(String input, Map<String, String> errors) {
-    int index = input.lastIndexOf('(');
-    if (index == -1 || !input.endsWith(")")) {
-      errors.put("errorRichtingParser", "Kies een richting uit de lijst!");
-      return;
+        Gebruiker gebruiker = repository.findByEmail(request.getEmail()).orElseThrow();
+        String jwtToken = jwtService.generateToken(gebruiker);
+        return AuthenticationResponseBuilder
+                .authenticationResponseBuilder()
+                .setToken(jwtToken)
+                .setRol(gebruiker.getActieveRol())
+                .build();
     }
 
-    String naam = input.substring(0, index).trim();
-    String niveau = input.substring(index + 1, input.length() - 1).trim();
+    private void parseStudierichting(String input, Map<String, String> errors) {
+        int index = input.lastIndexOf('(');
+        if (index == -1 || !input.endsWith(")")) {
+            errors.put("errorRichtingParser", "Kies een richting uit de lijst!");
+            return;
+        }
 
-    errors.put("naam", naam);
-    errors.put("niveau", niveau);
-  }
+        String naam = input.substring(0, index).trim();
+        String niveau = input.substring(index + 1, input.length() - 1).trim();
+
+        errors.put("naam", naam);
+        errors.put("niveau", niveau);
+    }
 
 }
