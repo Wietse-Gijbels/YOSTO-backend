@@ -76,7 +76,6 @@ public class GebruikerController {
         String token = extractToken(authorizationHeader);
         Gebruiker gebruiker = gebruikerService.getGebruikerByEmail(jwtService.extractEmail(token));
         return gebruikerService.findAllFavorieteStudierichtingen(gebruiker, page, 10);
-
     }
 
     @GetMapping("/id/{token}")
@@ -87,12 +86,12 @@ public class GebruikerController {
         return ResponseEntity.ok(response);
     }
 
-  @GetMapping("/gebruiker/{id}")
+    @GetMapping("/gebruiker/{id}")
     public Gebruiker getGebruikerById(@PathVariable UUID id) {
         return gebruikerService.getGebruikerById(id);
     }
 
-  @PutMapping("/{token}")
+    @PutMapping("/{token}")
     public Gebruiker updateGebruiker(
             @PathVariable String token,
             @RequestBody UpdateGebruikerDTO gebruiker
