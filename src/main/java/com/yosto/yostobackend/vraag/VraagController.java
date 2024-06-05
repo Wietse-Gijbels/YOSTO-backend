@@ -1,6 +1,5 @@
 package com.yosto.yostobackend.vraag;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
@@ -25,6 +24,7 @@ public class VraagController {
     public VraagController(VraagService vraagService) {
         this.vraagService = vraagService;
     }
+
 
     @GetMapping
     public List<Vraag> getAllVragen() {
