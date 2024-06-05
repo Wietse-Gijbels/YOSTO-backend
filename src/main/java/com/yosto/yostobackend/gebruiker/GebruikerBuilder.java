@@ -92,10 +92,7 @@ public final class GebruikerBuilder {
     this.rol = rol;
     return this;
   }
-    public GebruikerBuilder setRol(Rol rol) {
-        this.rol = rol;
-        return this;
-    }
+
 
     public GebruikerBuilder setStatus(Status status) {
         this.status = status;

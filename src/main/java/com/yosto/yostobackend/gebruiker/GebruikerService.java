@@ -167,4 +167,8 @@ public class GebruikerService {
 
         return new PageImpl<>(pagedStudierichtingen, pageable, favorieteStudierichtingen.size());
     }
+
+    public List<Gebruiker> findConnectedGebruikers() {
+        return repository.findAllByStatus(Status.ONLINE);
+    }
 }
