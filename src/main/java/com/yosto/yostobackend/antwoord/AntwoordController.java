@@ -4,6 +4,7 @@ import com.yosto.yostobackend.config.JwtService;
 import com.yosto.yostobackend.gebruiker.Gebruiker;
 import com.yosto.yostobackend.gebruiker.GebruikerService;
 import com.yosto.yostobackend.generic.ServiceException;
+import com.yosto.yostobackend.notifications.NotificationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -25,10 +26,13 @@ public class AntwoordController {
 
     private final JwtService jwtService;
 
-    public AntwoordController(AntwoordService antwoordService, GebruikerService gebruikerService, JwtService jwtService) {
+    private final NotificationService notificationService;
+
+    public AntwoordController(AntwoordService antwoordService, GebruikerService gebruikerService, JwtService jwtService, NotificationService notificationService) {
         this.antwoordService = antwoordService;
         this.gebruikerService = gebruikerService;
         this.jwtService = jwtService;
+        this.notificationService = notificationService;
     }
 
     @PostMapping

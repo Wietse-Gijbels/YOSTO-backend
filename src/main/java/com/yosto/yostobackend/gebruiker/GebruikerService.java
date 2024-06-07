@@ -6,6 +6,9 @@ import com.yosto.yostobackend.generic.ServiceException;
 import com.yosto.yostobackend.geschenk.Geschenk;
 import com.yosto.yostobackend.geschenkcategorie.GeschenkCategorie;
 import com.yosto.yostobackend.geschenkcategorie.GeschenkCategorieRepository;
+import com.yosto.yostobackend.notifications.FCMService;
+import com.yosto.yostobackend.notifications.NotificationRequest;
+import com.yosto.yostobackend.notifications.NotificationService;
 import com.yosto.yostobackend.studierichting.Studierichting;
 import com.yosto.yostobackend.studierichting.StudierichtingService;
 import org.springframework.data.domain.Page;
@@ -16,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 
 @Service
 public class GebruikerService {
@@ -25,14 +29,17 @@ public class GebruikerService {
     private final MailService emailSenderService;
     private final StudierichtingService studierichtingService;
     private final GebruikerRepository gebruikerRepository;
+    private final FCMService notificationService;
 
-    public GebruikerService(GebruikerRepository repository, AuthenticationService authenticationService, GeschenkCategorieRepository geschenkCategorieRepository, MailService emailSenderService, StudierichtingService studierichtingService, GebruikerRepository gebruikerRepository) {
+
+    public GebruikerService(GebruikerRepository repository, AuthenticationService authenticationService, GeschenkCategorieRepository geschenkCategorieRepository, MailService emailSenderService, StudierichtingService studierichtingService, GebruikerRepository gebruikerRepository, FCMService notificationService) {
         this.repository = repository;
         this.authenticationService = authenticationService;
         this.geschenkCategorieRepository = geschenkCategorieRepository;
         this.emailSenderService = emailSenderService;
         this.studierichtingService = studierichtingService;
         this.gebruikerRepository = gebruikerRepository;
+        this.notificationService = notificationService;
     }
 
     public void disconnect(Gebruiker gebruiker) {
@@ -87,9 +94,15 @@ public class GebruikerService {
     }
 
 
-    public void addGeschenkToGebruiker(UUID gebruikerId, UUID geschenkCategorieId) throws IOException {
+    public void addGeschenkToGebruiker(UUID gebruikerId, UUID geschenkCategorieId) throws IOException, ExecutionException, InterruptedException {
         Map<String, String> errors = new HashMap<>();
         Optional<Gebruiker> gebruikerOpt = repository.findById(gebruikerId);
+        NotificationRequest n = new NotificationRequest();
+        n.setBody("PLSSS WERK");
+        n.setTitle("PLSSS WERK");
+        n.setToken(gebruikerOpt.get().getFcmToken());
+        notificationService.sendMessageToToken(n);
+
         Optional<GeschenkCategorie> geschenkCategorie = geschenkCategorieRepository.findById(geschenkCategorieId);
         Geschenk geschenk;
         if (gebruikerOpt.isPresent() && geschenkCategorie.isPresent()) {

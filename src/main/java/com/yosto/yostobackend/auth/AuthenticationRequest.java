@@ -5,6 +5,8 @@ public class AuthenticationRequest {
 
   private String wachtwoord;
 
+  private String fcmToken;
+
   public AuthenticationRequest() {}
 
   public AuthenticationRequest(String email, String wachtwoord) {
@@ -18,5 +20,9 @@ public class AuthenticationRequest {
 
   public String getWachtwoord() {
     return wachtwoord;
+  }
+
+  public String getFcmToken() {
+    return fcmToken;
   }
 }

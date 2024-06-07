@@ -29,6 +29,8 @@ public final class GebruikerBuilder {
 
     int xpAantal;
 
+    String fcmToken;
+
   Set<Rol> rol;
 
   Rol actieveRol;
@@ -117,6 +119,11 @@ public final class GebruikerBuilder {
   public GebruikerBuilder setBehaaldeDiplomas(Set<Studierichting> behaaldeDiplomas) {
     this.behaaldeDiplomas = behaaldeDiplomas;
     return this;
+  }
+
+  public GebruikerBuilder setFcmToken(String fcmToken) {
+      this.fcmToken = fcmToken;
+      return this;
   }
 
     public Gebruiker build() {

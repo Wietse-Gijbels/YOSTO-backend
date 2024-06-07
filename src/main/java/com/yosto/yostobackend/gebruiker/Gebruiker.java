@@ -38,6 +38,8 @@ public class Gebruiker implements UserDetails {
 
     private int xpAantal;
 
+    private String fcmToken;
+
     @ManyToMany
     @JoinTable(
             name = "favoriete_studierichting",
@@ -151,6 +153,10 @@ public class Gebruiker implements UserDetails {
         return xpAantal;
     }
 
+    public String getFcmToken() {
+        return fcmToken;
+    }
+
     public List<Geschenk> getGeschenken() {
         return geschenken;
     }
@@ -158,7 +164,7 @@ public class Gebruiker implements UserDetails {
     public List<Studierichting> getFavorieteStudierichtingen() {
         return favorieteStudierichtingen;
     }
-  public Studierichting getHuidigeStudie() {
+    public Studierichting getHuidigeStudie() {
 
     return huidigeStudie;
   }
@@ -177,6 +183,10 @@ public class Gebruiker implements UserDetails {
     geschenk.updateGebruiker(this);
     this.xpAantal = xpAantalNew;
   }
+
+    public void setFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
+    }
 
     public void addFavorieteStudierichting(Studierichting studierichting) {
         favorieteStudierichtingen.add(studierichting);

@@ -154,6 +154,7 @@ public class AuthenticationService {
                 .setHuidigeStudie(huidigeStudie)
                 .setBehaaldeDiplomas(behaaldeDiplomas)
                 .setActieveRol(request.getActieveRol())
+                .setFcmToken(request.getFcmToken())
                 .build();
         repository.save(gebruiker);
         String jwtToken = jwtService.generateToken(gebruiker);
@@ -191,6 +192,8 @@ public class AuthenticationService {
         }
 
         Gebruiker gebruiker = repository.findByEmail(request.getEmail()).orElseThrow();
+        gebruiker.setFcmToken(request.getFcmToken());
+        repository.save(gebruiker);
         String jwtToken = jwtService.generateToken(gebruiker);
         return AuthenticationResponseBuilder
                 .authenticationResponseBuilder()

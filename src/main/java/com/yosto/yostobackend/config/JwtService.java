@@ -1,5 +1,6 @@
 package com.yosto.yostobackend.config;
 
+import com.yosto.yostobackend.gebruiker.Gebruiker;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -33,6 +34,8 @@ public class JwtService {
     }
 
   public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
+      Gebruiker gebruiker = (Gebruiker) userDetails;
+      extraClaims.put("fcmToken", gebruiker.getFcmToken());
     return Jwts
       .builder()
       .setClaims(extraClaims)

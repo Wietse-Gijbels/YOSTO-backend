@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequestMapping("/api/v1/geschenk")
@@ -35,7 +36,7 @@ public class GeschenkController {
     }
 
     @PostMapping("/addToGebruiker/{gebruikerId}/{geschenkCategorieId}")
-    public ResponseEntity<Void> addGeschenkToGebruiker(@PathVariable UUID gebruikerId, @PathVariable UUID geschenkCategorieId) throws IOException {
+    public ResponseEntity<Void> addGeschenkToGebruiker(@PathVariable UUID gebruikerId, @PathVariable UUID geschenkCategorieId) throws IOException, ExecutionException, InterruptedException {
         gebruikerService.addGeschenkToGebruiker(gebruikerId, geschenkCategorieId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

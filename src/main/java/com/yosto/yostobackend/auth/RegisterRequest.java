@@ -14,6 +14,7 @@ public class RegisterRequest {
   private String geslacht;
   private int leeftijd;
   private String woonplaats;
+  private String fcmToken;
 
   private Set<Rol> rol;
 
@@ -35,7 +36,8 @@ public class RegisterRequest {
     Set<Rol> rol,
     Rol actieveRol,
     String huidigeStudieAndNiveau,
-    List<String> behaaldeDiplomas
+    List<String> behaaldeDiplomas,
+    String fcmToken
   ) {
     this.voornaam = voornaam;
     this.achternaam = achternaam;
@@ -49,6 +51,7 @@ public class RegisterRequest {
     this.actieveRol = actieveRol;
     this.huidigeStudieAndNiveau = huidigeStudieAndNiveau;
     this.behaaldeDiplomas = behaaldeDiplomas;
+    this.fcmToken = fcmToken;
   }
 
   public String getVoornaam() {
@@ -97,5 +100,9 @@ public class RegisterRequest {
 
   public List<String> getBehaaldeDiplomas() {
     return behaaldeDiplomas;
+  }
+
+  public String getFcmToken() {
+    return fcmToken;
   }
 }

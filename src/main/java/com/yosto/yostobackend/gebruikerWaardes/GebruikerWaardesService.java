@@ -4,6 +4,7 @@ import com.yosto.yostobackend.antwoord.Antwoord;
 import com.yosto.yostobackend.antwoord.AntwoordRepository;
 import com.yosto.yostobackend.gebruiker.Gebruiker;
 import com.yosto.yostobackend.generic.ServiceException;
+import com.yosto.yostobackend.notifications.NotificationService;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -18,6 +19,7 @@ public class GebruikerWaardesService {
     private final GebruikerWaardesRepository gebruikerWaardesRepository;
 
     private final AntwoordRepository antwoordRepository;
+
 
     public GebruikerWaardesService(GebruikerWaardesRepository gebruikerWaardesRepository, AntwoordRepository antwoordRepository) {
         this.gebruikerWaardesRepository = gebruikerWaardesRepository;
@@ -39,6 +41,7 @@ public class GebruikerWaardesService {
         if (gebruikerWaardesRepository.findByGebruikerId(gebruiker.getId()) != null) {
             return gebruikerWaardesRepository.findByGebruikerId(gebruiker.getId());
         }
+
         List<Antwoord> antwoorden = antwoordRepository.findByGebruiker(gebruiker);
 
         Map<String, Integer> scores = antwoorden.stream()
