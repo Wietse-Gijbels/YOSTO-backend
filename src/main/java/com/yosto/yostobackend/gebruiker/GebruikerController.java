@@ -111,8 +111,9 @@ public class GebruikerController {
   }
 
 
-    @GetMapping("/rol/{token}")
-    public Rol getRoleFromToken(@PathVariable String token) {
+    @GetMapping("/rol")
+    public Rol getRoleFromToken(@RequestHeader("Authorization") String authorizationHeader) {
+        String token = extractToken(authorizationHeader);
         return gebruikerService.getRoleByEmail(jwtService.extractEmail(token));
     }
 
