@@ -57,4 +57,8 @@ public class AntwoordService {
     public List<Antwoord> getAntwoordenByGebruiker(Gebruiker gebruiker) {
         return antwoordRepository.findByGebruiker(gebruiker);
     }
+
+    public int getAmountOfAntwoorden(Gebruiker gebruiker) {
+        return antwoordRepository.findByGebruiker(gebruiker).size();
+    }
 }

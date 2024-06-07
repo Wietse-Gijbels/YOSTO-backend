@@ -3,8 +3,10 @@ package com.yosto.yostobackend.gebruikerWaardes;
 import com.yosto.yostobackend.antwoord.Antwoord;
 import com.yosto.yostobackend.antwoord.AntwoordRepository;
 import com.yosto.yostobackend.gebruiker.Gebruiker;
+import com.yosto.yostobackend.generic.ServiceException;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -23,10 +25,20 @@ public class GebruikerWaardesService {
     }
 
     public GebruikerWaardes findByGebruikerId(UUID id) {
-        return gebruikerWaardesRepository.findByGebruikerId(id);
+        Map<String, String> errors = new HashMap<>();
+
+        GebruikerWaardes gebruikersWaardes = gebruikerWaardesRepository.findByGebruikerId(id);
+        if (gebruikersWaardes == null) {
+            errors.put("errorGebruikerWaardes", "Er zijn nog geen waardes voor deze gebruiker");
+            throw new ServiceException(errors);
+        }
+        return gebruikersWaardes;
     }
 
     public GebruikerWaardes calculateGebruikerWaardes(Gebruiker gebruiker) {
+        if (gebruikerWaardesRepository.findByGebruikerId(gebruiker.getId()) != null) {
+            return gebruikerWaardesRepository.findByGebruikerId(gebruiker.getId());
+        }
         List<Antwoord> antwoorden = antwoordRepository.findByGebruiker(gebruiker);
 
         Map<String, Integer> scores = antwoorden.stream()

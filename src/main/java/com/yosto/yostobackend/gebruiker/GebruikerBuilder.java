@@ -1,34 +1,37 @@
 package com.yosto.yostobackend.gebruiker;
 
+import java.util.Set;
 import com.yosto.yostobackend.studierichting.Studierichting;
 
 import java.util.Set;
 import java.util.UUID;
 
 public final class GebruikerBuilder {
-  UUID id;
+    UUID id;
 
-  String voornaam;
+    String voornaam;
 
-  String achternaam;
+    String achternaam;
 
-  String gebruikersnaam;
+    String gebruikersnaam;
 
-  String email;
+    String email;
 
-  String wachtwoord;
+    String wachtwoord;
 
-  String geslacht;
+    String geslacht;
 
-  int leeftijd;
+    int leeftijd;
 
-  String woonplaats;
+    String woonplaats;
 
-  Status status;
+    Status status;
 
-  int xpAantal;
+    int xpAantal;
 
-  Rol rol;
+  Set<Rol> rol;
+
+  Rol actieveRol;
 
   Studierichting huidigeStudie;
 
@@ -36,67 +39,73 @@ public final class GebruikerBuilder {
 
   public GebruikerBuilder() {}
 
-  public static GebruikerBuilder gebruikerBuilder() {
-    return new GebruikerBuilder();
-  }
+    public static GebruikerBuilder gebruikerBuilder() {
+        return new GebruikerBuilder();
+    }
 
-  public GebruikerBuilder setId(UUID id) {
-    this.id = id;
-    return this;
-  }
+    public GebruikerBuilder setId(UUID id) {
+        this.id = id;
+        return this;
+    }
 
-  public GebruikerBuilder setVoornaam(String voornaam) {
-    this.voornaam = voornaam;
-    return this;
-  }
+    public GebruikerBuilder setVoornaam(String voornaam) {
+        this.voornaam = voornaam;
+        return this;
+    }
 
-  public GebruikerBuilder setAchternaam(String achternaam) {
-    this.achternaam = achternaam;
-    return this;
-  }
+    public GebruikerBuilder setAchternaam(String achternaam) {
+        this.achternaam = achternaam;
+        return this;
+    }
 
-  public GebruikerBuilder setGebruikersnaam(String gebruikersnaam) {
-    this.gebruikersnaam = gebruikersnaam;
-    return this;
-  }
+    public GebruikerBuilder setGebruikersnaam(String gebruikersnaam) {
+        this.gebruikersnaam = gebruikersnaam;
+        return this;
+    }
 
-  public GebruikerBuilder setEmail(String email) {
-    this.email = email;
-    return this;
-  }
+    public GebruikerBuilder setEmail(String email) {
+        this.email = email;
+        return this;
+    }
 
-  public GebruikerBuilder setWachtwoord(String wachtwoord) {
-    this.wachtwoord = wachtwoord;
-    return this;
-  }
+    public GebruikerBuilder setWachtwoord(String wachtwoord) {
+        this.wachtwoord = wachtwoord;
+        return this;
+    }
 
-  public GebruikerBuilder setGeslacht(String geslacht) {
-    this.geslacht = geslacht;
-    return this;
-  }
+    public GebruikerBuilder setGeslacht(String geslacht) {
+        this.geslacht = geslacht;
+        return this;
+    }
 
-  public GebruikerBuilder setLeeftijd(int leeftijd) {
-    this.leeftijd = leeftijd;
-    return this;
-  }
+    public GebruikerBuilder setLeeftijd(int leeftijd) {
+        this.leeftijd = leeftijd;
+        return this;
+    }
 
-  public GebruikerBuilder setWoonplaats(String woonplaats) {
-    this.woonplaats = woonplaats;
-    return this;
-  }
+    public GebruikerBuilder setWoonplaats(String woonplaats) {
+        this.woonplaats = woonplaats;
+        return this;
+    }
 
-  public GebruikerBuilder setRol(Rol rol) {
+  public GebruikerBuilder setRol(Set<Rol> rol) {
     this.rol = rol;
     return this;
   }
 
-  public GebruikerBuilder setStatus(Status status) {
-    this.status = status;
-    return this;
-  }
+
+    public GebruikerBuilder setStatus(Status status) {
+        this.status = status;
+        return this;
+    }
 
   public GebruikerBuilder setXpAantal(int xpAantal) {
     this.xpAantal = xpAantal;
+    return this;
+  }
+
+  public GebruikerBuilder setActieveRol(Rol actieveRol) {
+    this.actieveRol = actieveRol;
     return this;
   }
 
@@ -110,7 +119,7 @@ public final class GebruikerBuilder {
     return this;
   }
 
-  public Gebruiker build() {
-    return new Gebruiker(this);
-  }
+    public Gebruiker build() {
+        return new Gebruiker(this);
+    }
 }
