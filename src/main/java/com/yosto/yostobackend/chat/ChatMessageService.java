@@ -14,9 +14,9 @@ public class ChatMessageService {
   private final SimpMessagingTemplate messagingTemplate;
 
   public ChatMessageService(
-    ChatMessageRepository repository,
-    ChatRoomService chatRoomService,
-    SimpMessagingTemplate messagingTemplate
+          ChatMessageRepository repository,
+          ChatRoomService chatRoomService,
+          SimpMessagingTemplate messagingTemplate
   ) {
     this.repository = repository;
     this.chatRoomService = chatRoomService;
@@ -25,36 +25,42 @@ public class ChatMessageService {
 
   public ChatMessage save(ChatMessage chatMessage) {
     var chatRoomId = chatRoomService
-      .getChatRoomId(chatMessage.getSenderId(), chatMessage.getRecipientId(), true)
-      .orElseThrow();
+            .getChatRoomId(chatMessage.getSenderId(), chatMessage.getRecipientId(), chatMessage.getStudierichtingId(), true)
+            .orElseThrow();
     ChatMessage newChat = new ChatMessageBuilder()
-      .chatRoomId(chatRoomId)
-      .senderId(chatMessage.getSenderId())
-      .recipientId(chatMessage.getRecipientId())
-      .content(chatMessage.getContent())
-      .timestamp(chatMessage.getTimestamp())
-      .build();
+            .chatRoomId(chatRoomId)
+            .senderId(chatMessage.getSenderId())
+            .recipientId(chatMessage.getRecipientId())
+            .studierichtingId(chatMessage.getStudierichtingId())
+            .content(chatMessage.getContent())
+            .timestamp(chatMessage.getTimestamp())
+            .build();
     repository.save(newChat);
     return newChat;
   }
 
-  public List<ChatMessage> findChatMessages(UUID senderId, UUID recipientId) {
-    var chatRoomId = chatRoomService.getChatRoomId(senderId, recipientId, false);
-    return chatRoomId.map(repository::findByChatRoomId).orElse(new ArrayList<>());
+  public List<ChatMessage> findChatMessages(String chatId) {
+    var parts = chatId.split("_");
+    var senderId = UUID.fromString(parts[0]);
+    var recipientId = UUID.fromString(parts[1]);
+    var studierichtingId = UUID.fromString(parts[2]);
+    var chatRoomId = chatRoomService.getChatRoomId(senderId, recipientId, studierichtingId, false);
+    return chatRoomId.map(id -> repository.findByChatRoomIdAndStudierichtingId(id, studierichtingId)).orElse(new ArrayList<>());
   }
 
   public void processMessage(ChatMessage chatMessage) {
     ChatMessage savedMsg = save(chatMessage);
     messagingTemplate.convertAndSendToUser(
-      savedMsg.getRecipientId().toString(),
-      "/queue/messages",
-      new ChatNotificationBuilder()
-        .id(savedMsg.getId())
-        .senderId(savedMsg.getSenderId())
-        .recipientId(savedMsg.getRecipientId())
-        .content(savedMsg.getContent())
-        .timestamp(savedMsg.getTimestamp())
-        .build()
+            savedMsg.getRecipientId().toString(),
+            "/queue/messages",
+            new ChatNotificationBuilder()
+                    .id(savedMsg.getId())
+                    .senderId(savedMsg.getSenderId())
+                    .recipientId(savedMsg.getRecipientId())
+                    .content(savedMsg.getContent())
+                    .timestamp(savedMsg.getTimestamp())
+                    .studierichtingId(savedMsg.getStudierichtingId())
+                    .build()
     );
   }
 }

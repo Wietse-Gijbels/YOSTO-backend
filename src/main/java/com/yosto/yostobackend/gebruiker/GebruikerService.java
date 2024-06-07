@@ -171,4 +171,9 @@ public class GebruikerService {
     public List<Gebruiker> findConnectedGebruikers() {
         return repository.findAllByStatus(Status.ONLINE);
     }
+    public void addXp(UUID id, int xp) {
+        Gebruiker gebruiker = getGebruikerById(id);
+        gebruiker.addXp(xp);
+        repository.save(gebruiker);
+    }
 }
