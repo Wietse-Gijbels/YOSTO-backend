@@ -41,9 +41,9 @@ public class LookerQueueController {
     @GetMapping("/getFirstLooker")
     public ResponseEntity<Object> getFirstLooker(@RequestParam UUID userId) {
         Map<String, String> errors = new HashMap<>();
-        Optional<LookerQueue> lookerQueue = lookerQueueService.getFirstLookerInQueue(userId);
-        if (lookerQueue.isPresent()) {
-            return ResponseEntity.ok(lookerQueue.get().getLookerId());
+        Optional<String> chatRoomId = lookerQueueService.getChatForFirstLookerInQueue(userId);
+        if (chatRoomId.isPresent()) {
+            return ResponseEntity.ok(chatRoomId);
         } else {
             errors.put("emptyQueue", "The queue is empty.");
             throw new ServiceException(errors);

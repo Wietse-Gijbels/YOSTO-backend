@@ -8,6 +8,7 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class ChatMessageController {
@@ -22,11 +23,10 @@ public class ChatMessageController {
     chatMessageService.processMessage(chatMessage);
   }
 
-  @GetMapping("/messages/{senderId}/{recipientId}")
+  @GetMapping("/messages/{chatId}")
   public ResponseEntity<List<ChatMessage>> findChatMessages(
-    @PathVariable UUID senderId,
-    @PathVariable UUID recipientId
+          @PathVariable String chatId
   ) {
-    return ResponseEntity.ok(chatMessageService.findChatMessages(senderId, recipientId));
+    return ResponseEntity.ok(chatMessageService.findChatMessages(chatId));
   }
 }

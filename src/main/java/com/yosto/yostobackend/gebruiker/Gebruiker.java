@@ -186,6 +186,10 @@ public class Gebruiker implements UserDetails {
         favorieteStudierichtingen.remove(studierichting);
     }
 
+  public void addXp(int xp) {
+    this.xpAantal += xp;
+  }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return rollen

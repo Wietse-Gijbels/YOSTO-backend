@@ -108,4 +108,7 @@ public class StudierichtingService {
         return new PageImpl<>(paginatedList, PageRequest.of(page, size), studierichtingen.size());
     }
 
+    public Studierichting getStudierichtingById(UUID studierichtingId) {
+        return studierichtingRepository.findById(studierichtingId);
+    }
 }

@@ -1,9 +1,7 @@
 package com.yosto.yostobackend.chatroom;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
 import java.util.UUID;
 
 @Entity
@@ -16,6 +14,9 @@ public class ChatRoom {
   private String chatId;
   private UUID senderId;
   private UUID recipientId;
+  private UUID studierichtingId;
+  private String studierichtingNaam;
+  private Boolean isAfgesloten;
 
   public ChatRoom() {}
 
@@ -23,6 +24,9 @@ public class ChatRoom {
     this.chatId = builder.chatId;
     this.senderId = builder.senderId;
     this.recipientId = builder.recipientId;
+    this.studierichtingId = builder.studierichtingId;
+    this.studierichtingNaam = builder.studierichtingNaam;
+    this.isAfgesloten = builder.isAfgesloten;
   }
 
   public UUID getId() {
@@ -39,5 +43,17 @@ public class ChatRoom {
 
   public UUID getRecipientId() {
     return recipientId;
+  }
+
+  public UUID getStudierichtingId() {
+    return studierichtingId;
+  }
+
+  public String getStudierichtingNaam() {
+      return studierichtingNaam;
+  }
+
+  public Boolean getIsAfgesloten() {
+    return isAfgesloten;
   }
 }

@@ -102,6 +102,15 @@ public class GebruikerController {
         );
     }
 
+  @PostMapping("/xp")
+  public ResponseEntity<Void> addXp(@RequestBody Map<String, Object> request) {
+    UUID id = UUID.fromString((String) request.get("id"));
+    int xp = (int) request.get("xp");
+    gebruikerService.addXp(id, xp);
+    return ResponseEntity.ok().build();
+  }
+
+
     @GetMapping("/rol/{token}")
     public Rol getRoleFromToken(@PathVariable String token) {
         return gebruikerService.getRoleByEmail(jwtService.extractEmail(token));

@@ -1,12 +1,10 @@
 package com.yosto.yostobackend.chatroom;
 
 import com.yosto.yostobackend.gebruiker.Gebruiker;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -18,8 +16,20 @@ public class ChatRoomController {
         this.chatRoomService = chatRoomService;
     }
 
+    @GetMapping("/getChatRoom/{chatId}")
+    public ChatRoom getChat(@PathVariable String chatId) {
+        return chatRoomService.getChat(chatId);
+    }
+
     @GetMapping("/getMyChatRooms/{id}")
-    public List<Gebruiker> getMyChatRooms(@PathVariable UUID id) {
+    public List<ChatRoom> getMyChatRooms(@PathVariable UUID id) {
         return chatRoomService.getMyChatRooms(id);
     }
+
+    @PostMapping("/sluitChat")
+    public void sluitChat(@RequestBody Map<String, String> request) {
+        String chatId = request.get("chatId");
+        chatRoomService.sluitChat(chatId);
+    }
+
 }
