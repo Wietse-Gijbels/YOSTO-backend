@@ -156,6 +156,10 @@ public class Gebruiker implements UserDetails {
     this.xpAantal = xpAantalNew;
   }
 
+  public void addXp(int xp) {
+    this.xpAantal += xp;
+  }
+
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     return rollen
