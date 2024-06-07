@@ -1,12 +1,14 @@
 package com.yosto.yostobackend.auth;
 
 import com.yosto.yostobackend.config.JwtService;
+import com.yosto.yostobackend.email.MailService;
 import com.yosto.yostobackend.gebruiker.Gebruiker;
 import com.yosto.yostobackend.gebruiker.GebruikerBuilder;
 import com.yosto.yostobackend.gebruiker.GebruikerRepository;
 import com.yosto.yostobackend.gebruiker.Status;
 import com.yosto.yostobackend.generic.ServiceException;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -34,20 +36,26 @@ public class AuthenticationService {
 
     private final StudierichtingService studierichtingService;
 
+    private final MailService mailService;
+    private final GebruikerRepository gebruikerRepository;
+
+
     public AuthenticationService(
             GebruikerRepository repository,
             PasswordEncoder passwordEncoder,
             JwtService jwtService,
-            AuthenticationManager authenticationManager, StudierichtingService studierichtingService
-    ) {
+            AuthenticationManager authenticationManager, StudierichtingService studierichtingService, MailService mailService,
+            GebruikerRepository gebruikerRepository) {
         this.repository = repository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
         this.studierichtingService = studierichtingService;
+        this.mailService = mailService;
+        this.gebruikerRepository = gebruikerRepository;
     }
 
-    public AuthenticationResponse registreer(RegisterRequest request) {
+    public AuthenticationResponse registreer(RegisterRequest request) throws IOException {
         Map<String, String> errors = new HashMap<>();
 
         // Eerst checken of de gebruiker al bestaat
@@ -138,6 +146,8 @@ public class AuthenticationService {
             }
         }
 
+        String verificatieCode = UUID.randomUUID().toString();
+
         Gebruiker gebruiker = GebruikerBuilder
                 .gebruikerBuilder()
                 .setVoornaam(request.getVoornaam())
@@ -155,13 +165,27 @@ public class AuthenticationService {
                 .setBehaaldeDiplomas(behaaldeDiplomas)
                 .setActieveRol(request.getActieveRol())
                 .build();
+        gebruiker.setVerificatieCode(verificatieCode);
         repository.save(gebruiker);
+        mailService.sendTextEmail(gebruiker.getEmail(), "Uw verificatiecode", "Uw verificatiecode is: " + verificatieCode);
+
         String jwtToken = jwtService.generateToken(gebruiker);
         return AuthenticationResponseBuilder
                 .authenticationResponseBuilder()
                 .setToken(jwtToken)
                 .setRol(gebruiker.getActieveRol())
                 .build();
+    }
+
+    public void verifyAccount(String email, String code) {
+        Gebruiker gebruiker = repository.findByEmail(email).orElseThrow(() -> new ServiceException(Map.of("errorEmail", "Gebruiker niet gevonden")));
+        if (gebruiker.getVerificatieCode().equals(code)) {
+            gebruiker.setAccountActief(true);
+            gebruiker.setVerificatieCode(null);
+            repository.save(gebruiker);
+        } else {
+            throw new ServiceException(Map.of("errorVerify", "Verificatiecode is onjuist"));
+        }
     }
 
     public AuthenticationResponse login(AuthenticationRequest request) {
@@ -172,6 +196,12 @@ public class AuthenticationService {
         }
         if (request.getWachtwoord() == null || request.getWachtwoord().isBlank()) {
             errors.put("errorLoginWachtwoord", "Wachtwoord is verplicht!");
+        }
+
+        if (gebruikerRepository.findByEmail(request.getEmail()).isPresent()) {
+            if (!gebruikerRepository.findByEmail(request.getEmail()).get().isAccountActief()) {
+                errors.put("errorActiefAccount", "Uw moet eerst uw account verifiëren!");
+            }
         }
 
         if (!errors.isEmpty()) {
