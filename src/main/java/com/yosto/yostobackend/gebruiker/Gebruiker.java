@@ -38,6 +38,10 @@ public class Gebruiker implements UserDetails {
 
     private int xpAantal;
 
+    private boolean accountActief = false;
+
+    private String verificatieCode;
+
     @ManyToMany
     @JoinTable(
             name = "favoriete_studierichting",
@@ -101,6 +105,7 @@ public class Gebruiker implements UserDetails {
     this.actieveRol = builder.actieveRol;
     this.huidigeStudie = builder.huidigeStudie;
     this.behaaldeDiplomas = builder.behaaldeDiplomas;
+    this.accountActief = false;
   }
 
     public UUID getId() {
@@ -189,6 +194,22 @@ public class Gebruiker implements UserDetails {
   public void addXp(int xp) {
     this.xpAantal += xp;
   }
+
+    public boolean isAccountActief() {
+        return accountActief;
+    }
+
+    public void setAccountActief(boolean accountActief) {
+        this.accountActief = accountActief;
+    }
+
+    public String getVerificatieCode() {
+        return verificatieCode;
+    }
+
+    public void setVerificatieCode(String verificatieCode) {
+        this.verificatieCode = verificatieCode;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -45,7 +45,7 @@ public class GebruikerInitialDataLoader {
                         .setXpAantal(300)
                         .setActieveRol(Rol.STUDYHELPER)
                         .build();
-
+                gebruiker1.setVerificatieCode("code");
                 gebruikerRepository.save(gebruiker1);
             }
             email = "looker@looker.looker";
@@ -65,7 +65,7 @@ public class GebruikerInitialDataLoader {
                         .setStatus(Status.ONLINE)
                         .setActieveRol(Rol.STUDYLOOKER)
                         .build();
-
+                gebruiker2.setVerificatieCode("code");
                 gebruikerRepository.save(gebruiker2);
             }
 
