@@ -2,10 +2,7 @@ package com.yosto.yostobackend.auth;
 
 import com.yosto.yostobackend.config.JwtService;
 import com.yosto.yostobackend.email.MailService;
-import com.yosto.yostobackend.gebruiker.Gebruiker;
-import com.yosto.yostobackend.gebruiker.GebruikerBuilder;
-import com.yosto.yostobackend.gebruiker.GebruikerRepository;
-import com.yosto.yostobackend.gebruiker.Status;
+import com.yosto.yostobackend.gebruiker.*;
 import com.yosto.yostobackend.generic.ServiceException;
 
 import java.io.IOException;
@@ -163,7 +160,7 @@ public class AuthenticationService {
                 .setXpAantal(0)
                 .setHuidigeStudie(huidigeStudie)
                 .setBehaaldeDiplomas(behaaldeDiplomas)
-                .setActieveRol(request.getActieveRol())
+                .setActieveRol(request.getRol().stream().findFirst().orElse(null))
                 .build();
         gebruiker.setVerificatieCode(verificatieCode);
         repository.save(gebruiker);
@@ -243,4 +240,22 @@ public class AuthenticationService {
         errors.put("niveau", niveau);
     }
 
+    public void switchRol(String token) {
+        Gebruiker oudeGebruiker = gebruikerRepository.findByEmail(jwtService.extractEmail(token)).orElseThrow();
+        gebruikerRepository.delete(oudeGebruiker);
+        gebruikerRepository.save(GebruikerBuilder.gebruikerBuilder()
+                .setVoornaam(oudeGebruiker.getVoornaam())
+                .setAchternaam(oudeGebruiker.getAchternaam())
+                .setEmail(oudeGebruiker.getEmail())
+                .setWoonplaats(oudeGebruiker.getWoonplaats())
+                .setStatus(oudeGebruiker.getStatus())
+                .setRol(oudeGebruiker.getRollen())
+                .setLeeftijd(oudeGebruiker.getLeeftijd())
+                .setGeslacht(oudeGebruiker.getGeslacht())
+                .setWachtwoord(oudeGebruiker.getWachtwoord())
+                .setGebruikersnaam(oudeGebruiker.getGebruikersnaam())
+                .setActieveRol(oudeGebruiker.getActieveRol().equals(Rol.STUDYHELPER) ? Rol.STUDYLOOKER : Rol.STUDYHELPER)
+                .build());
+
+    }
 }

@@ -17,7 +17,6 @@ public class RegisterRequest {
 
   private Set<Rol> rol;
 
-  private Rol actieveRol;
   private String huidigeStudieAndNiveau;
   private List<String> behaaldeDiplomas;
 
@@ -46,7 +45,6 @@ public class RegisterRequest {
     this.leeftijd = leeftijd;
     this.woonplaats = woonplaats;
     this.rol = rol;
-    this.actieveRol = actieveRol;
     this.huidigeStudieAndNiveau = huidigeStudieAndNiveau;
     this.behaaldeDiplomas = behaaldeDiplomas;
   }
@@ -86,10 +84,6 @@ public class RegisterRequest {
   public Set<Rol> getRol() {
     return rol;
   }
-
-  public Rol getActieveRol() {
-        return actieveRol;
-    }
 
   public String getHuidigeStudieAndNiveau() {
     return huidigeStudieAndNiveau;
