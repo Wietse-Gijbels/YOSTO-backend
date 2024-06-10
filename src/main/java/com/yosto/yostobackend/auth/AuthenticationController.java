@@ -37,8 +37,8 @@ public class AuthenticationController {
     return ResponseEntity.ok().build();
   }
 
-  @PostMapping("/switch")
-    public ResponseEntity<Void> switchRol(@RequestBody String token) {
+  @PostMapping("/switch/{token}")
+    public ResponseEntity<Void> switchRol(@PathVariable String token) {
         service.switchRol(token);
         return ResponseEntity.ok().build();
     }

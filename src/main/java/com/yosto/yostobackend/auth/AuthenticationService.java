@@ -243,7 +243,7 @@ public class AuthenticationService {
     public void switchRol(String token) {
         Gebruiker oudeGebruiker = gebruikerRepository.findByEmail(jwtService.extractEmail(token)).orElseThrow();
         gebruikerRepository.delete(oudeGebruiker);
-        gebruikerRepository.save(GebruikerBuilder.gebruikerBuilder()
+        Gebruiker newGebruiker = GebruikerBuilder.gebruikerBuilder()
                 .setVoornaam(oudeGebruiker.getVoornaam())
                 .setAchternaam(oudeGebruiker.getAchternaam())
                 .setEmail(oudeGebruiker.getEmail())
@@ -255,7 +255,10 @@ public class AuthenticationService {
                 .setWachtwoord(oudeGebruiker.getWachtwoord())
                 .setGebruikersnaam(oudeGebruiker.getGebruikersnaam())
                 .setActieveRol(oudeGebruiker.getActieveRol().equals(Rol.STUDYHELPER) ? Rol.STUDYLOOKER : Rol.STUDYHELPER)
-                .build());
+                .setXpAantal(oudeGebruiker.getXpAantal())
+                .build();
+        newGebruiker.setAccountActief();
+        gebruikerRepository.save(newGebruiker);
 
     }
 }

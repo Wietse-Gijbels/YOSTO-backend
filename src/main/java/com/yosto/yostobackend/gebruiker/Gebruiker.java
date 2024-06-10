@@ -87,6 +87,10 @@ public class Gebruiker implements UserDetails {
         this.status = Status.ONLINE;
     }
 
+    public void setAccountActief() {
+        this.accountActief = true;
+    }
+
     public Gebruiker() {
     }
 

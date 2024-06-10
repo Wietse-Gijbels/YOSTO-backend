@@ -70,7 +70,7 @@ public class GebruikerService {
     public Gebruiker updateGebruiker(String email, UpdateGebruikerDTO gebruiker) {
         Gebruiker oudeGebruiker = getGebruikerByEmail(email);
         repository.delete(oudeGebruiker);
-        return repository.save(new GebruikerBuilder()
+        Gebruiker newGebruiker = new GebruikerBuilder()
                 .setId(oudeGebruiker.getId())
                 .setVoornaam(gebruiker.voornaam())
                 .setAchternaam(gebruiker.achternaam())
@@ -82,8 +82,11 @@ public class GebruikerService {
                 .setGeslacht(gebruiker.geslacht())
                 .setWachtwoord(oudeGebruiker.getWachtwoord())
                 .setGebruikersnaam(oudeGebruiker.getGebruikersnaam())
-                        .setActieveRol(oudeGebruiker.getActieveRol())
-                .build());
+                .setActieveRol(oudeGebruiker.getActieveRol())
+                .setXpAantal(oudeGebruiker.getXpAantal())
+                .build();
+        newGebruiker.setAccountActief();
+        return repository.save(newGebruiker);
     }
 
 
@@ -129,7 +132,7 @@ public class GebruikerService {
     public Gebruiker updateRole(Rol rol, String email) {
         Gebruiker gebruiker = getGebruikerByEmail(email);
         repository.delete(gebruiker);
-        return repository.save(new GebruikerBuilder()
+        Gebruiker newGebruiker =new GebruikerBuilder()
                 .setId(gebruiker.getId())
                 .setVoornaam(gebruiker.getVoornaam())
                 .setAchternaam(gebruiker.getAchternaam())
@@ -141,8 +144,11 @@ public class GebruikerService {
                 .setGeslacht(gebruiker.getGeslacht())
                 .setWachtwoord(gebruiker.getWachtwoord())
                 .setGebruikersnaam(gebruiker.getGebruikersnaam())
+                .setXpAantal(gebruiker.getXpAantal())
                 .setActieveRol(rol)
-                .build());
+                .build();
+        newGebruiker.setAccountActief();
+        return repository.save(newGebruiker);
     }
     public void addFavorieteStudierichting(Gebruiker gebruiker, UUID studierichtingId) {
         Studierichting studierichting = studierichtingService.findStudierichtingById(studierichtingId);
