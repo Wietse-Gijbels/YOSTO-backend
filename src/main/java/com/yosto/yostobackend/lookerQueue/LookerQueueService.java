@@ -34,19 +34,30 @@ public class LookerQueueService {
 
     public Optional<String> getChatForFirstLookerInQueue(UUID userId) {
         Gebruiker helper = gebruikerService.getGebruikerById(userId);
-        Set<UUID> completedStudyDirections = helper.getBehaaldeDiplomas().stream().map(studierichting -> studierichting.getId()).collect(Collectors.toSet());
 
-        List<String> myChatRoomChatIds = chatRoomService.getMyChatRooms(userId).stream().map(ChatRoom::getChatId).toList();
+        // Get completed study directions and add the current study
+        Set<UUID> completedStudyDirections = helper.getBehaaldeDiplomas().stream()
+                .map(studierichting -> studierichting.getId())
+                .collect(Collectors.toSet());
+
+        if (helper.getHuidigeStudie() != null) {
+            completedStudyDirections.add(helper.getHuidigeStudie().getId());
+        }
+
+        List<String> myChatRoomChatIds = chatRoomService.getMyChatRooms(userId).stream()
+                .map(ChatRoom::getChatId)
+                .collect(Collectors.toList());
 
         List<LookerQueue> lookerQueues = lookerQueueRepository.findAllByOrderByTimestampAsc();
         Optional<LookerQueue> lookerQueue = lookerQueues.stream()
-                .filter(queue -> !queue.getLookerId().equals(userId) && completedStudyDirections.contains(queue.getStudierichtingId()) && !myChatRoomChatIds.contains(String.format("%s_%s_%s", userId, queue.getLookerId(), queue.getStudierichtingId()))) //check if they already have a chat, what would the chatroom id be with user, looker and studierichting? and compare
+                .filter(queue -> !queue.getLookerId().equals(userId) &&
+                        completedStudyDirections.contains(queue.getStudierichtingId()) &&
+                        !myChatRoomChatIds.contains(String.format("%s_%s_%s", userId, queue.getLookerId(), queue.getStudierichtingId())))
                 .findFirst();
 
         if (lookerQueue.isPresent()) {
             lookerQueue.ifPresent(lookerQueueRepository::delete);
             Optional<String> chatRoomChatId = chatRoomService.getChatRoomId(userId, lookerQueue.get().getLookerId(), lookerQueue.get().getStudierichtingId(), true);
-            //get the chatroom id from the chatroom chatId
             return chatRoomChatId;
         } else {
             return Optional.empty();
@@ -66,5 +77,21 @@ public class LookerQueueService {
 
     public Integer getAmountOfLookersInQueue() {
         return (int) lookerQueueRepository.count();
+    }
+
+    public Integer getAmountOfLookersInQueueForUser(UUID userId) {
+        //count the amount of lookers where the studierichting is in the completed study directions or the huidige studie of the user
+        Gebruiker user = gebruikerService.getGebruikerById(userId);
+        Set<UUID> completedStudyDirections = user.getBehaaldeDiplomas().stream()
+                .map(studierichting -> studierichting.getId())
+                .collect(Collectors.toSet());
+
+        if (user.getHuidigeStudie() != null) {
+            completedStudyDirections.add(user.getHuidigeStudie().getId());
+        }
+
+        return (int) lookerQueueRepository.findAll().stream()
+                .filter(queue -> completedStudyDirections.contains(queue.getStudierichtingId()))
+                .count();
     }
 }

@@ -9,6 +9,7 @@ public class ChatRoomBuilder {
   UUID recipientId;
   UUID studierichtingId;
   String studierichtingNaam;
+  String studiepunten;
   Boolean isAfgesloten;
 
   public ChatRoomBuilder() {}
@@ -45,6 +46,11 @@ public class ChatRoomBuilder {
   public ChatRoomBuilder studierichtingNaam(String studierichtingNaam) {
     this.studierichtingNaam = studierichtingNaam;
     return this;
+  }
+
+  public ChatRoomBuilder studiepunten(String studiepunten) {
+      this.studiepunten = studiepunten;
+      return this;
   }
 
   public ChatRoomBuilder isAfgesloten(Boolean isAfgesloten) {
