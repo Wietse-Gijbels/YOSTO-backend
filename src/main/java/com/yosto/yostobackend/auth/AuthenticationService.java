@@ -145,8 +145,7 @@ public class AuthenticationService {
 
         String verificatieCode = UUID.randomUUID().toString();
 
-        Gebruiker gebruiker = GebruikerBuilder
-                .gebruikerBuilder()
+        Gebruiker gebruiker = new GebruikerBuilder()
                 .setVoornaam(request.getVoornaam())
                 .setAchternaam(request.getAchternaam())
                 .setGebruikersnaam(request.getGebruikersnaam())
@@ -243,7 +242,7 @@ public class AuthenticationService {
     public void switchRol(String token) {
         Gebruiker oudeGebruiker = gebruikerRepository.findByEmail(jwtService.extractEmail(token)).orElseThrow();
         gebruikerRepository.delete(oudeGebruiker);
-        Gebruiker newGebruiker = GebruikerBuilder.gebruikerBuilder()
+        Gebruiker newGebruiker = new GebruikerBuilder()
                 .setVoornaam(oudeGebruiker.getVoornaam())
                 .setAchternaam(oudeGebruiker.getAchternaam())
                 .setEmail(oudeGebruiker.getEmail())

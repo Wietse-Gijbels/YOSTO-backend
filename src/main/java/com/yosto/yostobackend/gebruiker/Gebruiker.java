@@ -55,33 +55,33 @@ public class Gebruiker implements UserDetails {
     @JsonManagedReference(value = "gebruiker-geschenken")
     private List<Geschenk> geschenken = new ArrayList<>();
 
-  @ManyToOne
-  @JoinColumn(name = "huidige_studierichting_id")
-  private Studierichting huidigeStudie;
+    @ManyToOne
+    @JoinColumn(name = "huidige_studierichting_id")
+    private Studierichting huidigeStudie;
 
-  @ManyToMany
-  @JoinTable(
-          name = "gebruiker_behaalde_diplomas",
-          joinColumns = @JoinColumn(name = "gebruiker_id"),
-          inverseJoinColumns = @JoinColumn(name = "studierichting_id")
-  )
-  private Set<Studierichting> behaaldeDiplomas = new HashSet<>();
+    @ManyToMany
+    @JoinTable(
+            name = "gebruiker_behaalde_diplomas",
+            joinColumns = @JoinColumn(name = "gebruiker_id"),
+            inverseJoinColumns = @JoinColumn(name = "studierichting_id")
+    )
+    private Set<Studierichting> behaaldeDiplomas = new HashSet<>();
 
-  @ElementCollection(fetch = FetchType.EAGER)
-  @Enumerated(EnumType.STRING)
-  @CollectionTable(
-    name = "gebruiker_roles",
-    joinColumns = @JoinColumn(name = "gebruiker_id")
-  )
-  @Column(name = "rol")
-  private Set<Rol> rollen;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Enumerated(EnumType.STRING)
+    @CollectionTable(
+            name = "gebruiker_roles",
+            joinColumns = @JoinColumn(name = "gebruiker_id")
+    )
+    @Column(name = "rol")
+    private Set<Rol> rollen;
 
-  @Column(name = "actieve_rol")
-  private Rol actieveRol;
+    @Column(name = "actieve_rol")
+    private Rol actieveRol;
 
-  public void disconnect() {
-    this.status = Status.OFFLINE;
-  }
+    public void disconnect() {
+        this.status = Status.OFFLINE;
+    }
 
     public void connect() {
         this.status = Status.ONLINE;
@@ -94,23 +94,51 @@ public class Gebruiker implements UserDetails {
     public Gebruiker() {
     }
 
-  public Gebruiker(GebruikerBuilder builder) {
-    this.voornaam = builder.voornaam;
-    this.achternaam = builder.achternaam;
-    this.gebruikersnaam = builder.gebruikersnaam;
-    this.email = builder.email;
-    this.wachtwoord = builder.wachtwoord;
-    this.geslacht = builder.geslacht;
-    this.leeftijd = builder.leeftijd;
-    this.woonplaats = builder.woonplaats;
-    this.rollen = builder.rol;
-    this.status = builder.status;
-    this.xpAantal = builder.xpAantal;
-    this.actieveRol = builder.actieveRol;
-    this.huidigeStudie = builder.huidigeStudie;
-    this.behaaldeDiplomas = builder.behaaldeDiplomas;
-    this.accountActief = false;
-  }
+    public Gebruiker(GebruikerBuilder builder) {
+        this.voornaam = builder.voornaam;
+        this.achternaam = builder.achternaam;
+        this.gebruikersnaam = builder.gebruikersnaam;
+        this.email = builder.email;
+        this.wachtwoord = builder.wachtwoord;
+        this.geslacht = builder.geslacht;
+        this.leeftijd = builder.leeftijd;
+        this.woonplaats = builder.woonplaats;
+        this.rollen = new HashSet<>(builder.rol);
+        this.status = builder.status;
+        this.xpAantal = builder.xpAantal;
+        this.actieveRol = builder.actieveRol;
+        this.huidigeStudie = builder.huidigeStudie;
+        if (builder.behaaldeDiplomas != null){
+            this.behaaldeDiplomas = new HashSet<>(builder.behaaldeDiplomas);
+        }
+        if (builder.geschenken != null){
+            this.geschenken = new ArrayList<>(builder.geschenken);
+        }
+        if (builder.favoriteStudierichtingen != null){
+            this.favorieteStudierichtingen = new ArrayList<>(builder.favoriteStudierichtingen);
+        }
+        this.accountActief = false;
+    }
+
+    public void setAchternaam(String achternaam) {
+        this.achternaam = achternaam;
+    }
+
+    public void setVoornaam(String voornaam) {
+        this.voornaam = voornaam;
+    }
+
+    public void setGeslacht(String geslacht) {
+        this.geslacht = geslacht;
+    }
+
+    public void setLeeftijd(int leeftijd) {
+        this.leeftijd = leeftijd;
+    }
+
+    public void setWoonplaats(String woonplaats) {
+        this.woonplaats = woonplaats;
+    }
 
     public UUID getId() {
         return id;
@@ -167,25 +195,26 @@ public class Gebruiker implements UserDetails {
     public List<Studierichting> getFavorieteStudierichtingen() {
         return favorieteStudierichtingen;
     }
-  public Studierichting getHuidigeStudie() {
 
-    return huidigeStudie;
-  }
+    public Studierichting getHuidigeStudie() {
 
-  public Set<Studierichting> getBehaaldeDiplomas() {
-    return behaaldeDiplomas;
-  }
+        return huidigeStudie;
+    }
 
-  public Rol getActieveRol() {
-    return actieveRol;
-  }
+    public Set<Studierichting> getBehaaldeDiplomas() {
+        return behaaldeDiplomas;
+    }
+
+    public Rol getActieveRol() {
+        return actieveRol;
+    }
 
 
-  public void addGeschenk(Geschenk geschenk, int xpAantalNew) {
-    geschenken.add(geschenk);
-    geschenk.updateGebruiker(this);
-    this.xpAantal = xpAantalNew;
-  }
+    public void addGeschenk(Geschenk geschenk, int xpAantalNew) {
+        geschenken.add(geschenk);
+        geschenk.updateGebruiker(this);
+        this.xpAantal = xpAantalNew;
+    }
 
     public void addFavorieteStudierichting(Studierichting studierichting) {
         favorieteStudierichtingen.add(studierichting);
@@ -195,9 +224,9 @@ public class Gebruiker implements UserDetails {
         favorieteStudierichtingen.remove(studierichting);
     }
 
-  public void addXp(int xp) {
-    this.xpAantal += xp;
-  }
+    public void addXp(int xp) {
+        this.xpAantal += xp;
+    }
 
     public boolean isAccountActief() {
         return accountActief;

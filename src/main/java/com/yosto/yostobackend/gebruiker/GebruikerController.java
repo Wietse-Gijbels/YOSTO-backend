@@ -102,6 +102,12 @@ public class GebruikerController {
         );
     }
 
+    @GetMapping("/diplomas")
+    public List<Studierichting> getDiplomas(@RequestHeader("Authorization") String authorizationHeader) {
+        String token = extractToken(authorizationHeader);
+        return gebruikerService.getDiplomas(jwtService.extractEmail(token));
+    }
+
   @PostMapping("/xp")
   public ResponseEntity<Void> addXp(@RequestBody Map<String, Object> request) {
     UUID id = UUID.fromString((String) request.get("id"));

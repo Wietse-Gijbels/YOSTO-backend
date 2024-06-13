@@ -67,26 +67,14 @@ public class GebruikerService {
                 );
     }
 
-    public Gebruiker updateGebruiker(String email, UpdateGebruikerDTO gebruiker) {
-        Gebruiker oudeGebruiker = getGebruikerByEmail(email);
-        repository.delete(oudeGebruiker);
-        Gebruiker newGebruiker = new GebruikerBuilder()
-                .setId(oudeGebruiker.getId())
-                .setVoornaam(gebruiker.voornaam())
-                .setAchternaam(gebruiker.achternaam())
-                .setEmail(oudeGebruiker.getEmail())
-                .setWoonplaats(gebruiker.woonplaats())
-                .setStatus(oudeGebruiker.getStatus())
-                .setRol(oudeGebruiker.getRollen())
-                .setLeeftijd(gebruiker.leeftijd())
-                .setGeslacht(gebruiker.geslacht())
-                .setWachtwoord(oudeGebruiker.getWachtwoord())
-                .setGebruikersnaam(oudeGebruiker.getGebruikersnaam())
-                .setActieveRol(oudeGebruiker.getActieveRol())
-                .setXpAantal(oudeGebruiker.getXpAantal())
-                .build();
-        newGebruiker.setAccountActief();
-        return repository.save(newGebruiker);
+    public Gebruiker updateGebruiker(String email, UpdateGebruikerDTO updateGebruikerDTO) {
+        Gebruiker gebruiker = getGebruikerByEmail(email);
+        gebruiker.setLeeftijd(updateGebruikerDTO.leeftijd());
+        gebruiker.setGeslacht(updateGebruikerDTO.geslacht());
+        gebruiker.setWoonplaats(updateGebruikerDTO.woonplaats());
+        gebruiker.setVoornaam(updateGebruikerDTO.voornaam());
+        gebruiker.setAchternaam(updateGebruikerDTO.achternaam());
+        return repository.save(gebruiker);
     }
 
 
@@ -132,19 +120,7 @@ public class GebruikerService {
     public Gebruiker updateRole(Rol rol, String email) {
         Gebruiker gebruiker = getGebruikerByEmail(email);
         repository.delete(gebruiker);
-        Gebruiker newGebruiker =new GebruikerBuilder()
-                .setId(gebruiker.getId())
-                .setVoornaam(gebruiker.getVoornaam())
-                .setAchternaam(gebruiker.getAchternaam())
-                .setEmail(gebruiker.getEmail())
-                .setWoonplaats(gebruiker.getWoonplaats())
-                .setStatus(gebruiker.getStatus())
-                .setRol(gebruiker.getRollen())
-                .setLeeftijd(gebruiker.getLeeftijd())
-                .setGeslacht(gebruiker.getGeslacht())
-                .setWachtwoord(gebruiker.getWachtwoord())
-                .setGebruikersnaam(gebruiker.getGebruikersnaam())
-                .setXpAantal(gebruiker.getXpAantal())
+        Gebruiker newGebruiker =new GebruikerBuilder(gebruiker)
                 .setActieveRol(rol)
                 .build();
         newGebruiker.setAccountActief();
@@ -187,5 +163,10 @@ public class GebruikerService {
         Gebruiker gebruiker = getGebruikerByEmail(email);
         gebruiker.addRol(updateRoleDTO);
         return repository.save(gebruiker);
+    }
+
+    public List<Studierichting> getDiplomas(String email) {
+        Gebruiker gebruiker = getGebruikerByEmail(email);
+        return new ArrayList<>(gebruiker.getBehaaldeDiplomas());
     }
 }
