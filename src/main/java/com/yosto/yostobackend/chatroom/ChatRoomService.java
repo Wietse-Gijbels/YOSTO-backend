@@ -51,6 +51,7 @@ public class ChatRoomService {
             .recipientId(recipientId)
             .studierichtingId(studierichtingId)
             .studierichtingNaam(studierichtingService.getStudierichtingById(studierichtingId).getNaam())
+            .studiepunten(studierichtingService.getStudierichtingById(studierichtingId).getStudiepunten())
             .isAfgesloten(false)
             .build();
 
@@ -61,6 +62,7 @@ public class ChatRoomService {
             .recipientId(senderId)
             .studierichtingId(studierichtingId)
             .studierichtingNaam(studierichtingService.getStudierichtingById(studierichtingId).getNaam())
+            .studiepunten(studierichtingService.getStudierichtingById(studierichtingId).getStudiepunten())
             .isAfgesloten(false)
             .build();
 
@@ -96,6 +98,7 @@ public class ChatRoomService {
               .recipientId(chatRoom.getRecipientId())
               .studierichtingId(chatRoom.getStudierichtingId())
               .studierichtingNaam(chatRoom.getStudierichtingNaam())
+              .studiepunten(chatRoom.getStudiepunten())
               .isAfgesloten(true)
               .build()).collect(Collectors.toList());
 

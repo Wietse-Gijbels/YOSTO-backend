@@ -78,4 +78,20 @@ public class LookerQueueService {
     public Integer getAmountOfLookersInQueue() {
         return (int) lookerQueueRepository.count();
     }
+
+    public Integer getAmountOfLookersInQueueForUser(UUID userId) {
+        //count the amount of lookers where the studierichting is in the completed study directions or the huidige studie of the user
+        Gebruiker user = gebruikerService.getGebruikerById(userId);
+        Set<UUID> completedStudyDirections = user.getBehaaldeDiplomas().stream()
+                .map(studierichting -> studierichting.getId())
+                .collect(Collectors.toSet());
+
+        if (user.getHuidigeStudie() != null) {
+            completedStudyDirections.add(user.getHuidigeStudie().getId());
+        }
+
+        return (int) lookerQueueRepository.findAll().stream()
+                .filter(queue -> completedStudyDirections.contains(queue.getStudierichtingId()))
+                .count();
+    }
 }

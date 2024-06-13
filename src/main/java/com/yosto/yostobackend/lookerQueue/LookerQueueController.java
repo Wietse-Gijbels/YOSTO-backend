@@ -57,6 +57,13 @@ public class LookerQueueController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/getAmountForMyStudierichtingen")
+    public ResponseEntity<Map<String, Integer>> getAmountForMyStudierichtingen(@RequestParam UUID userId) {
+        Map<String, Integer> response = new HashMap<>();
+        response.put("amount", lookerQueueService.getAmountOfLookersInQueueForUser(userId));
+        return ResponseEntity.ok(response);
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(
             {
