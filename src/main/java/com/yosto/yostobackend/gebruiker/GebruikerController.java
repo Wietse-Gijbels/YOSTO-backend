@@ -129,6 +129,13 @@ public class GebruikerController {
         return gebruikerService.updateRole(updateRoleDTO, jwtService.extractEmail(token));
     }
 
+    @PutMapping("/addRol")
+    public Gebruiker addRole(@RequestBody Map<String,String> request) {
+        String token = request.get("token");
+        Rol updateRoleDTO = Rol.valueOf(request.get("rol"));
+        return gebruikerService.addRol(updateRoleDTO, jwtService.extractEmail(token));
+    }
+
     private String extractToken(String authorizationHeader) {
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             return authorizationHeader.substring(7); // Remove "Bearer " prefix

@@ -182,4 +182,10 @@ public class GebruikerService {
         gebruiker.addXp(xp);
         repository.save(gebruiker);
     }
+
+    public Gebruiker addRol(Rol updateRoleDTO, String email) {
+        Gebruiker gebruiker = getGebruikerByEmail(email);
+        gebruiker.addRol(updateRoleDTO);
+        return repository.save(gebruiker);
+    }
 }

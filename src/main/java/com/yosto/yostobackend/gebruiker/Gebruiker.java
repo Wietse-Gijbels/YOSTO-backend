@@ -254,4 +254,7 @@ public class Gebruiker implements UserDetails {
     }
 
 
+    public void addRol(Rol updateRoleDTO) {
+        rollen.add(updateRoleDTO);
+    }
 }
