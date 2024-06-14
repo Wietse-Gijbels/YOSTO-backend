@@ -1,5 +1,6 @@
 package com.yosto.yostobackend.studierichting;
 
+import com.yosto.yostobackend.config.JwtService;
 import com.yosto.yostobackend.generic.ServiceException;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -19,13 +20,21 @@ public class StudierichtingController {
 
     private final StudierichtingService studierichtingService;
 
-    public StudierichtingController(StudierichtingService studierichtingService) {
+    private final JwtService jwtService;
+
+    public StudierichtingController(StudierichtingService studierichtingService, JwtService jwtService) {
         this.studierichtingService = studierichtingService;
+        this.jwtService = jwtService;
     }
 
     @GetMapping("/dto")
     public List<String> findAllStudierichtingDTOs() {
         return studierichtingService.findAllStudierichtingDTOs();
+    }
+
+    @GetMapping("/hoger-onderwijs/dto/{token}")
+    public List<String> findAllStudierichtingDTOsToevoeging(@PathVariable String token) {
+        return studierichtingService.findAllStudierichtingDTOsToevoeging(jwtService.extractEmail(token));
     }
 
     @GetMapping("/all/{page}")

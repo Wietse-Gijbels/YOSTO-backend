@@ -286,4 +286,8 @@ public class Gebruiker implements UserDetails {
     public void addRol(Rol updateRoleDTO) {
         rollen.add(updateRoleDTO);
     }
+
+    public void addBehaaldDiploma(Studierichting studierichting) {
+        behaaldeDiplomas.add(studierichting);
+    }
 }

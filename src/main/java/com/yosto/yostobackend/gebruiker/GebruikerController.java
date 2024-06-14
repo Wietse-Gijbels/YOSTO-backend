@@ -108,6 +108,11 @@ public class GebruikerController {
         return gebruikerService.getDiplomas(jwtService.extractEmail(token));
     }
 
+    @PostMapping("/diplomas/{token}")
+    public List<Studierichting> addDiploma(@RequestBody Map<String,String> diploma, @PathVariable("token") String authorizationHeader) {
+        return gebruikerService.addDiploma(jwtService.extractEmail(authorizationHeader), diploma.get("diploma"));
+    }
+
   @PostMapping("/xp")
   public ResponseEntity<Void> addXp(@RequestBody Map<String, Object> request) {
     UUID id = UUID.fromString((String) request.get("id"));

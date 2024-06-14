@@ -7,6 +7,7 @@ import com.yosto.yostobackend.geschenk.Geschenk;
 import com.yosto.yostobackend.geschenkcategorie.GeschenkCategorie;
 import com.yosto.yostobackend.geschenkcategorie.GeschenkCategorieRepository;
 import com.yosto.yostobackend.studierichting.Studierichting;
+import com.yosto.yostobackend.studierichting.StudierichtingRepository;
 import com.yosto.yostobackend.studierichting.StudierichtingService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -25,14 +26,16 @@ public class GebruikerService {
     private final MailService emailSenderService;
     private final StudierichtingService studierichtingService;
     private final GebruikerRepository gebruikerRepository;
+    private final StudierichtingRepository studierichtingRepository;
 
-    public GebruikerService(GebruikerRepository repository, AuthenticationService authenticationService, GeschenkCategorieRepository geschenkCategorieRepository, MailService emailSenderService, StudierichtingService studierichtingService, GebruikerRepository gebruikerRepository) {
+    public GebruikerService(GebruikerRepository repository, AuthenticationService authenticationService, GeschenkCategorieRepository geschenkCategorieRepository, MailService emailSenderService, StudierichtingService studierichtingService, GebruikerRepository gebruikerRepository, StudierichtingRepository studierichtingRepository) {
         this.repository = repository;
         this.authenticationService = authenticationService;
         this.geschenkCategorieRepository = geschenkCategorieRepository;
         this.emailSenderService = emailSenderService;
         this.studierichtingService = studierichtingService;
         this.gebruikerRepository = gebruikerRepository;
+        this.studierichtingRepository = studierichtingRepository;
     }
 
     public void disconnect(Gebruiker gebruiker) {
@@ -169,4 +172,14 @@ public class GebruikerService {
         Gebruiker gebruiker = getGebruikerByEmail(email);
         return new ArrayList<>(gebruiker.getBehaaldeDiplomas());
     }
+
+    public List<Studierichting> addDiploma(String email, String studierichting) {
+        Map<String,String> errors = new HashMap<>();
+        authenticationService.parseStudierichting(studierichting, errors);
+        Gebruiker gebruiker = getGebruikerByEmail(email);
+        Studierichting newStudierichting = studierichtingRepository.findByNaamAndNiveauNaam(errors.get("naam"), errors.get("niveau")).orElseThrow();
+        gebruiker.addBehaaldDiploma(newStudierichting);
+        gebruikerRepository.save(gebruiker);
+        return new ArrayList<>(gebruiker.getBehaaldeDiplomas());
+    };
 }

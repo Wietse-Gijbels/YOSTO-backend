@@ -225,7 +225,7 @@ public class AuthenticationService {
                 .build();
     }
 
-    private void parseStudierichting(String input, Map<String, String> errors) {
+    public void parseStudierichting(String input, Map<String, String> errors) {
         int index = input.lastIndexOf('(');
         if (index == -1 || !input.endsWith(")")) {
             errors.put("errorRichtingParser", "Kies een richting uit de lijst!");
