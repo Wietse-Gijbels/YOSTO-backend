@@ -102,6 +102,17 @@ public class GebruikerController {
         );
     }
 
+    @GetMapping("/diplomas")
+    public List<Studierichting> getDiplomas(@RequestHeader("Authorization") String authorizationHeader) {
+        String token = extractToken(authorizationHeader);
+        return gebruikerService.getDiplomas(jwtService.extractEmail(token));
+    }
+
+    @PostMapping("/diplomas/{token}")
+    public List<Studierichting> addDiploma(@RequestBody Map<String,String> diploma, @PathVariable("token") String authorizationHeader) {
+        return gebruikerService.addDiploma(jwtService.extractEmail(authorizationHeader), diploma.get("diploma"));
+    }
+
   @PostMapping("/xp")
   public ResponseEntity<Void> addXp(@RequestBody Map<String, Object> request) {
     UUID id = UUID.fromString((String) request.get("id"));
@@ -127,6 +138,13 @@ public class GebruikerController {
     public Gebruiker updateRole(@RequestBody Rol updateRoleDTO, @RequestHeader("Authorization") String authHeader) {
         String token = authHeader.substring(7);
         return gebruikerService.updateRole(updateRoleDTO, jwtService.extractEmail(token));
+    }
+
+    @PutMapping("/addRol")
+    public Gebruiker addRole(@RequestBody Map<String,String> request) {
+        String token = request.get("token");
+        Rol updateRoleDTO = Rol.valueOf(request.get("rol"));
+        return gebruikerService.addRol(updateRoleDTO, jwtService.extractEmail(token));
     }
 
     private String extractToken(String authorizationHeader) {

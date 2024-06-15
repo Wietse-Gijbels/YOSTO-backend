@@ -1,5 +1,6 @@
 package com.yosto.yostobackend.studierichting;
 
+import com.yosto.yostobackend.gebruiker.GebruikerRepository;
 import com.yosto.yostobackend.generic.ServiceException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -13,9 +14,11 @@ import java.util.stream.Collectors;
 public class StudierichtingService {
 
     private final StudierichtingRepository studierichtingRepository;
+    private final GebruikerRepository gebruikerRepository;
 
-    public StudierichtingService(StudierichtingRepository studierichtingRepository) {
+    public StudierichtingService(StudierichtingRepository studierichtingRepository, GebruikerRepository gebruikerRepository) {
         this.studierichtingRepository = studierichtingRepository;
+        this.gebruikerRepository = gebruikerRepository;
     }
 
     public Page<Studierichting> findAll(int page, int size) {
@@ -39,6 +42,15 @@ public class StudierichtingService {
     public List<String> findAllStudierichtingDTOs() {
         List<Studierichting> studierichtingen = (List<Studierichting>) studierichtingRepository.findAll();
         return studierichtingen.stream()
+                .map(s -> new StudierichtingDTO(s.getNaam(), s.getNiveauNaam()).toString())
+                .collect(Collectors.toList());
+    }
+
+    public List<String> findAllStudierichtingDTOsToevoeging(String email) {
+        Set<Studierichting> diplomas = gebruikerRepository.findByEmail(email).get().getBehaaldeDiplomas();
+        List<Studierichting> studierichtingen = (List<Studierichting>) studierichtingRepository.findAll();
+        return studierichtingen
+                .stream().filter(s -> !diplomas.contains(s))
                 .map(s -> new StudierichtingDTO(s.getNaam(), s.getNiveauNaam()).toString())
                 .collect(Collectors.toList());
     }

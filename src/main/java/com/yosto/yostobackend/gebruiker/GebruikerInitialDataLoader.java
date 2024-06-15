@@ -29,8 +29,7 @@ public class GebruikerInitialDataLoader {
         return args -> {
             String email = "kuno.vercammen@gmail.com";
             if (gebruikerRepository.findByEmail(email).isEmpty()) {
-                Gebruiker gebruiker1 = GebruikerBuilder
-                        .gebruikerBuilder()
+                Gebruiker gebruiker1 = new GebruikerBuilder()
                         .setId(UUID.randomUUID())
                         .setVoornaam("helper")
                         .setAchternaam("helper")
@@ -46,12 +45,12 @@ public class GebruikerInitialDataLoader {
                         .setActieveRol(Rol.STUDYHELPER)
                         .build();
                 gebruiker1.setVerificatieCode("code");
+                gebruiker1.setAccountActief();
                 gebruikerRepository.save(gebruiker1);
             }
             email = "looker@looker.looker";
             if (gebruikerRepository.findByEmail(email).isEmpty()) {
-                Gebruiker gebruiker2 = GebruikerBuilder
-                        .gebruikerBuilder()
+                Gebruiker gebruiker2 = new GebruikerBuilder()
                         .setId(UUID.randomUUID())
                         .setVoornaam("looker")
                         .setAchternaam("looker")
@@ -66,6 +65,7 @@ public class GebruikerInitialDataLoader {
                         .setActieveRol(Rol.STUDYLOOKER)
                         .build();
                 gebruiker2.setVerificatieCode("code");
+                gebruiker2.setAccountActief();
                 gebruikerRepository.save(gebruiker2);
             }
 
